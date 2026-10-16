@@ -107,6 +107,8 @@ public class BagInventorySlot : MonoBehaviour
             colliders = new HashSet<Collider>();
             overlappingResources.Add(resource, colliders);
 
+            Debug.Log($"{name}: tracking {resource.name}",this);
+  
             resource.Released += OnResourceReleased;
         }
 
@@ -126,6 +128,10 @@ public class BagInventorySlot : MonoBehaviour
     {
         // Wait until XR has finished processing the release.
         pendingReleases.Add(resource);
+        Debug.Log(
+            $"{name}: released {resource.name}, held={resource.IsHeld}",
+            this
+        );
     }
 
     private void LateUpdate()
