@@ -2,6 +2,10 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Serialization;
+using UnityEngine.XR.Interaction.Toolkit;
+using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
 [RequireComponent(typeof(BoxCollider))]
 public class BagInventorySlot : MonoBehaviour
@@ -17,7 +21,7 @@ public class BagInventorySlot : MonoBehaviour
 
     [Header("Resource Previews")]
     [SerializeField] private GameObject cubeSlot;
-    [SerializeField] private GameObject sphereSlot;
+    [SerializeField] private GameObject pyramidSlot;
 
     [Header("Storage")]
     [SerializeField] private Transform storedObjectsRoot;
@@ -32,11 +36,13 @@ public class BagInventorySlot : MonoBehaviour
 
     private Color defaultColor;
     private BagResourceType? storedType;
+    private BagSlotInteractable slotInteraction;
 
     public int Count => storedResources.Count;
 
     private void Awake()
     {
+        slotInteraction = GetComponent<BagSlotInteractable>();
         defaultColor = slotImage != null? slotImage.color : Color.white;
 
         if (storedObjectsRoot == null)
@@ -189,12 +195,74 @@ public class BagInventorySlot : MonoBehaviour
         RefreshDisplay();
     }
 
+    public bool TryTakeResource(XRBaseInputInteractor hand, XRInteractionManager manager)
+    {
+        if (!isActiveAndEnabled || Count == 0)
+            return false;
+
+        if (hand == null || !hand.isActiveAndEnabled || hand.hasSelection)
+            return false;
+
+        if (manager == null || hand.interactionManager != manager)
+            return false;
+
+        int resourceIndex = Count - 1;
+        BagResource resource = storedResources[resourceIndex];
+
+        if (resource == null)
+            return false;
+
+        XRGrabInteractable grab = resource.GrabInteractable;
+
+        // Restore the original object close to the hand's attachment point.
+        Transform handAttach = hand.GetAttachTransform(grab);
+
+        resource.RestoreFromStorage(
+            handAttach.position,
+            handAttach.rotation
+        );
+
+        bool layersMatch =
+            (hand.interactionLayers.value & grab.interactionLayers.value) != 0;
+
+        bool canSelect = grab.interactionManager == manager
+            && layersMatch
+            && manager.CanSelect(
+                (IXRSelectInteractor)hand,
+                (IXRSelectInteractable)grab
+            );
+
+        if (canSelect)
+        {
+            manager.SelectEnter(
+                (IXRSelectInteractor)hand,
+                (IXRSelectInteractable)grab
+            );
+        }
+
+        if (!grab.IsSelected((IXRSelectInteractor)hand))
+        {
+            // Keep the inventory unchanged if the hand cannot take the object.
+            resource.Store(storedObjectsRoot);
+            return false;
+        }
+
+        // Remove the entry only after the hand successfully receives it.
+        storedResources.RemoveAt(resourceIndex);
+
+        if (Count == 0)
+            storedType = null;
+
+        RefreshDisplay();
+        return true;
+    }
+
     private void RefreshHighlight()
     {
         if (slotImage == null)
             return;
 
-        bool hasValidResource = false;
+        bool canStoreResource = false;
 
         foreach (var entry in overlappingResources)
         {
@@ -205,12 +273,18 @@ public class BagInventorySlot : MonoBehaviour
 
             if (IsInsideSlot(resource) && CanAccept(resource))
             {
-                hasValidResource = true;
+                canStoreResource = true;
                 break;
             }
         }
 
-        slotImage.color = hasValidResource? availableColor : defaultColor;
+        bool canTakeResource = slotInteraction != null && slotInteraction.HasFreeHandHover();
+
+        // Both available actions currently share the same highlight color.
+        if (canStoreResource || canTakeResource)
+            slotImage.color = availableColor;
+        else
+            slotImage.color = defaultColor;
     }
 
     private void RefreshDisplay()
@@ -227,10 +301,10 @@ public class BagInventorySlot : MonoBehaviour
             );
         }
 
-        if (sphereSlot != null)
+        if (pyramidSlot != null)
         {
-            sphereSlot.SetActive(
-                Count > 0 && storedType == BagResourceType.Sphere
+            pyramidSlot.SetActive(
+                Count > 0 && storedType == BagResourceType.Pyramid
             );
         }
     }

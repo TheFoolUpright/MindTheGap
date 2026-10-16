@@ -423,6 +423,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1843789686500254869}
     m_Modifications:
+    - target: {fileID: 1353255650145621013, guid: 5f4ac06305112dd499be88c5e1d50472, type: 3}
+      propertyPath: pyramidSlot
+      value: 
+      objectReference: {fileID: 1349009924313764836, guid: 960d69f6ca9ed484c9f7f34b7a356757, type: 3}
     - target: {fileID: 1531247593910314279, guid: 5f4ac06305112dd499be88c5e1d50472, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -463,6 +467,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2358824347774088925, guid: 5f4ac06305112dd499be88c5e1d50472, type: 3}
+      propertyPath: pyramidSlot
+      value: 
+      objectReference: {fileID: 1349009924313764836, guid: 960d69f6ca9ed484c9f7f34b7a356757, type: 3}
     - target: {fileID: 8346161559414287575, guid: 5f4ac06305112dd499be88c5e1d50472, type: 3}
       propertyPath: m_Name
       value: Inventory
@@ -470,8 +478,91 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 2936126536021152779, guid: 5f4ac06305112dd499be88c5e1d50472, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1429490467236086178}
   m_SourcePrefab: {fileID: 100100000, guid: 5f4ac06305112dd499be88c5e1d50472, type: 3}
+--- !u!1 &677732144777237967 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2936126536021152779, guid: 5f4ac06305112dd499be88c5e1d50472, type: 3}
+  m_PrefabInstance: {fileID: 2438978801756799428}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1429490467236086178
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 677732144777237967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7ed8e1eb2e33c6b49bdfd7bf69c74a2e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BagSlotInteractable
+  m_InteractionManager: {fileID: 0}
+  m_Colliders:
+  - {fileID: 7179314059997146737}
+  m_InteractionLayers:
+    m_Bits: 16
+  m_DistanceCalculationMode: 1
+  m_SelectMode: 0
+  m_FocusMode: 1
+  m_CustomReticle: {fileID: 0}
+  m_AllowGazeInteraction: 0
+  m_AllowGazeSelect: 0
+  m_OverrideGazeTimeToSelect: 0
+  m_GazeTimeToSelect: 0.5
+  m_OverrideTimeToAutoDeselectGaze: 0
+  m_TimeToAutoDeselectGaze: 3
+  m_AllowGazeAssistance: 0
+  m_FirstHoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastHoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_HoverExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstSelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastSelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_SelectExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FirstFocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_LastFocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusEntered:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FocusExited:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Activated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Deactivated:
+    m_PersistentCalls:
+      m_Calls: []
+  m_StartingHoverFilters: []
+  m_StartingSelectFilters: []
+  m_StartingInteractionStrengthFilters: []
+  m_AutoFindParentInteractableInHierarchy: 0
+  m_ParentInteractableObject: {fileID: 0}
 --- !u!4 &3790038427955504355 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1531247593910314279, guid: 5f4ac06305112dd499be88c5e1d50472, type: 3}
@@ -480,5 +571,10 @@ Transform:
 --- !u!1 &5911955256765623571 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8346161559414287575, guid: 5f4ac06305112dd499be88c5e1d50472, type: 3}
+  m_PrefabInstance: {fileID: 2438978801756799428}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &7179314059997146737 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 4790407604045410229, guid: 5f4ac06305112dd499be88c5e1d50472, type: 3}
   m_PrefabInstance: {fileID: 2438978801756799428}
   m_PrefabAsset: {fileID: 0}
