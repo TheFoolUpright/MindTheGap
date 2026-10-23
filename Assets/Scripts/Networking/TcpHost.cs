@@ -11,6 +11,7 @@ using UnityEngine;
 public class TcpHost : MonoBehaviour
 {
     [SerializeField] private int port = 8856;
+    [SerializeField] private ReceiverController explorerReceiver;
 
     private TcpListener listener;
     private TcpClient navigatorClient;
@@ -196,6 +197,12 @@ public class TcpHost : MonoBehaviour
             if (messageType == MessageProtocol.SymbolSend)
             {
                 Debug.Log($"Explorer received symbol: {symbol}");
+
+                // Show the symbol on the Explorer's receiver.
+                if (explorerReceiver != null)
+                    explorerReceiver.AddSymbol(symbol);
+                else
+                    Debug.LogWarning("TcpHost has no Explorer Receiver assigned.");
 
                 string confirmation =
                     MessageProtocol.CreateSymbolConfirmation(symbol);

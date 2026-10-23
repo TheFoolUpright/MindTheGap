@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Concurrent;
 using System.IO;
@@ -14,14 +13,17 @@ public class TcpClientConnection : MonoBehaviour
     [SerializeField] private string serverIp = "127.0.0.1";
     [SerializeField] private int port = 8856;
 
-    private TcpClient client;
-    private StreamWriter writer;
+    private TcpClient connectionToExplorer;
+    private StreamWriter explorerWriter;
     private Thread connectionThread;
 
     private volatile bool isConnected;
 
     private readonly object connectionLock = new();
     private readonly ConcurrentQueue<string> messageQueue = new();
+
+    [Header("Gameplay References")]
+    [SerializeField] private ReceiverController navigatorReceiver;
 
     private void Start()
     {
@@ -68,8 +70,8 @@ public class TcpClientConnection : MonoBehaviour
 
             lock (connectionLock)
             {
-                client = newClient;
-                writer = newWriter;
+                connectionToExplorer = newClient;
+                explorerWriter = newWriter;
                 isConnected = true;
             }
 
@@ -103,8 +105,8 @@ public class TcpClientConnection : MonoBehaviour
             lock (connectionLock)
             {
                 isConnected = false;
-                writer = null;
-                client = null;
+                explorerWriter = null;
+                connectionToExplorer = null;
             }
 
             newClient.Close();
@@ -120,14 +122,36 @@ public class TcpClientConnection : MonoBehaviour
             HandleMessage(message);
         }
 
-        // Temporary test: press P to send PING.
-        if (isConnected &&
-            Keyboard.current != null &&
-            Keyboard.current.pKey.wasPressedThisFrame)
+        // Temporary test: press number keys to send Symbol.
+        if (isConnected && Keyboard.current != null)
         {
-            string message = MessageProtocol.CreateSymbolMessage(MessageProtocol.Light);
+            if (Keyboard.current.digit1Key.wasPressedThisFrame)
+            {
+                SendToExplorer(
+                    MessageProtocol.CreateSymbolMessage(MessageProtocol.Light)
+                );
+            }
 
-            SendMessageToHost(message);
+            if (Keyboard.current.digit2Key.wasPressedThisFrame)
+            {
+                SendToExplorer(
+                    MessageProtocol.CreateSymbolMessage(MessageProtocol.Door)
+                );
+            }
+
+            if (Keyboard.current.digit3Key.wasPressedThisFrame)
+            {
+                SendToExplorer(
+                    MessageProtocol.CreateSymbolMessage(MessageProtocol.Enemy)
+                );
+            }
+
+            if (Keyboard.current.digit4Key.wasPressedThisFrame)
+            {
+                SendToExplorer(
+                    MessageProtocol.CreateSymbolMessage(MessageProtocol.Return)
+                );
+            }
         }
     }
 
@@ -140,6 +164,9 @@ public class TcpClientConnection : MonoBehaviour
             if (messageType == MessageProtocol.SymbolReceived)
             {
                 Debug.Log($"Navigator symbol confirmed: {symbol}");
+
+                // Update the Navigator's sent-message history.
+                navigatorReceiver?.AddSymbol(symbol);
             }
 
             return;
@@ -165,16 +192,16 @@ public class TcpClientConnection : MonoBehaviour
         }
     }
 
-    public void SendMessageToHost(string message)
+    public void SendToExplorer(string message)
     {
         lock (connectionLock)
         {
-            if (!isConnected || writer == null)
+            if (!isConnected || explorerWriter == null)
                 return;
 
             try
             {
-                writer.WriteLine(message);
+                explorerWriter.WriteLine(message);
 
                 Debug.Log($"Navigator sent: {message}");
             }
@@ -187,18 +214,18 @@ public class TcpClientConnection : MonoBehaviour
         }
     }
 
-    public void Disconnect()
+    public void DisconnectFromHost()
     {
         isConnected = false;
 
         lock (connectionLock)
         {
-            client?.Close();
+            connectionToExplorer?.Close();
         }
     }
 
     private void OnDestroy()
     {
-        Disconnect();
+        DisconnectFromHost();
     }
 }

@@ -52,20 +52,24 @@ public class ReceiverDisplay : MonoBehaviour
     }
 
 
+
     private void UpdateDisplay(IReadOnlyList<string> history)
     {
-        for (int i = 0; i < symbolSlots.Length; i++)
+        int slotCount = symbolSlots.Length;
+
+        for (int i = 0; i < slotCount; i++)
         {
             Image slot = symbolSlots[i];
 
             if (slot == null)
                 continue;
 
-            // Reverse the history so the oldest message
-            // appears at the top and newest at the bottom.
-            int historyIndex = symbolSlots.Length - 1 - i;
+            // The newest message belongs in the bottom slot.
+            // Older messages fill the slots above it.
+            int historyIndex = slotCount - 1 - i;
 
-            if (historyIndex < history.Count &&
+            if (historyIndex >= 0 &&
+                historyIndex < history.Count &&
                 spriteLookup.TryGetValue(
                     history[historyIndex],
                     out Sprite sprite
@@ -82,5 +86,6 @@ public class ReceiverDisplay : MonoBehaviour
             }
         }
     }
+
 
 }
