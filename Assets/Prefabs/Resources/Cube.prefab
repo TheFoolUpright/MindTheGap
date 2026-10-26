@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 1633786306480699200}
   - component: {fileID: 5298726254912036019}
   - component: {fileID: 802104660332102217}
+  - component: {fileID: -3654688370231453139}
   m_Layer: 0
   m_Name: Cube
   m_TagString: Untagged
@@ -206,6 +207,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d60895b64ed5bdd498ba89025f339ebb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BagResource
+  resourceType: 0
+--- !u!114 &-3654688370231453139
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3174152353200825943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97f912b388a311c4581bf890a229e8e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FurnaceResource
   resourceType: 0
 --- !u!1 &4745586553312559201
 GameObject:
