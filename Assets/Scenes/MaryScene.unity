@@ -2108,6 +2108,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FurnaceController
   processOnEntry: 0
+  cubeGoal: 10
+  pyramidGoal: 10
 --- !u!4 &81742619
 Transform:
   m_ObjectHideFlags: 0
@@ -7826,7 +7828,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &311271676
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7841,6 +7843,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::TcpHost
   port: 8856
   explorerReceiver: {fileID: 1173237508}
+  furnace: {fileID: 81742618}
 --- !u!4 &311271677
 Transform:
   m_ObjectHideFlags: 0
@@ -28061,6 +28064,7 @@ MonoBehaviour:
   serverIp: 127.0.0.1
   port: 8856
   navigatorReceiver: {fileID: 1861320785}
+  furnaceDisplay: {fileID: 1350168413}
 --- !u!4 &1260978369
 Transform:
   m_ObjectHideFlags: 0
@@ -29468,13 +29472,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 50b6836e7f620644a8dc694916b42ae5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FurnaceDisplay
-  furnace: {fileID: 81742618}
+  furnace: {fileID: 0}
   cubeBarBack: {fileID: 1856944790}
   cubeBarFill: {fileID: 670254263}
-  cubeGoal: 10
   pyramidBarBack: {fileID: 1655010868}
   pyramidBarFill: {fileID: 1036362864}
-  pyramidGoal: 10
+  totalsText: {fileID: 0}
+  pendingText: {fileID: 0}
 --- !u!1 &1352731167
 GameObject:
   m_ObjectHideFlags: 0
@@ -36534,10 +36538,10 @@ MonoBehaviour:
   furnace: {fileID: 81742618}
   cubeBarBack: {fileID: 1557990952}
   cubeBarFill: {fileID: 1995607416}
-  cubeGoal: 10
   pyramidBarBack: {fileID: 840999497}
   pyramidBarFill: {fileID: 1396365252}
-  pyramidGoal: 10
+  totalsText: {fileID: 0}
+  pendingText: {fileID: 0}
 --- !u!1 &1662617811
 GameObject:
   m_ObjectHideFlags: 0
