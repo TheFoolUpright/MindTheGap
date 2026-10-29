@@ -3711,11 +3711,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 803414501}
   m_Mesh: {fileID: 6626561161428730133, guid: 00c9c177e828a57439e290aef2a23b3f, type: 3}
---- !u!4 &828801920 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 7947451460911944431, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
-  m_PrefabInstance: {fileID: 499223201982831089}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &840835431 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 9113011546711674679, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
@@ -10073,30 +10068,6 @@ PrefabInstance:
     - target: {fileID: 2334129241765475545, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
       propertyPath: m_Name
       value: Cutter
-      objectReference: {fileID: 0}
-    - target: {fileID: 3370089680637288865, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
-      propertyPath: m_FarAttachMode
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3370089680637288865, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
-      propertyPath: m_AttachTransform
-      value: 
-      objectReference: {fileID: 828801920}
-    - target: {fileID: 4422474100526803909, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
-      propertyPath: m_UseGravity
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4422474100526803909, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
-      propertyPath: m_Interpolate
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4422474100526803909, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
-      propertyPath: m_IsKinematic
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4422474100526803909, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
-      propertyPath: m_CollisionDetection
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5875236172584209850, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
       propertyPath: m_LocalPosition.x

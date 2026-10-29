@@ -73,6 +73,7 @@ GameObject:
   - component: {fileID: 5875236172584209850}
   - component: {fileID: 4422474100526803909}
   - component: {fileID: 3370089680637288865}
+  - component: {fileID: 4189861720583654351}
   m_Layer: 0
   m_Name: Cutter
   m_TagString: Untagged
@@ -227,7 +228,7 @@ MonoBehaviour:
   m_SmoothScale: 0
   m_SmoothScaleAmount: 8
   m_TightenScale: 0.1
-  m_ThrowOnDetach: 1
+  m_ThrowOnDetach: 0
   m_ThrowSmoothingDuration: 0.25
   m_ThrowSmoothingCurve:
     serializedVersion: 2
@@ -257,6 +258,21 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
+--- !u!114 &4189861720583654351
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2334129241765475545}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 389eb2feb78bbc24a89239a4f2e5f8c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CutterTool
+  cuttingTip: {fileID: 3125653910364144224}
+  heldByHand: 0
+  useRequested: 0
 --- !u!1 &3314327496696568982
 GameObject:
   m_ObjectHideFlags: 0
