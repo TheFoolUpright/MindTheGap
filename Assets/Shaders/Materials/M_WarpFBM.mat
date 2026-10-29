@@ -7,11 +7,12 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_ColorMorph_Cube
-  m_Shader: {fileID: 4800000, guid: a1a7368478f640d59c61b53092942625, type: 3}
+  m_Name: M_WarpFBM
+  m_Shader: {fileID: 4800000, guid: 38e7a60ddb184d5bba7f92bf2a53cb9b, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _QUALITY_MEDIUM
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -25,14 +26,13 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _EmissionStrength: 0.3
-    - _Scale: 3
+    - _EmissionStrength: 0.5
+    - _Quality: 1
+    - _Scale: 2
     - _Smoothness: 0.4
-    - _Softness: 0.6
-    - _Speed: 0.5
-    - _Warp: 1.5
+    - _Speed: 0.6
     m_Colors:
-    - _ColorA: {r: 0.7647059, g: 0.09019608, b: 0.9882353, a: 1}
-    - _ColorB: {r: 0.45882353, g: 0.14509805, b: 0.80784315, a: 1}
+    - _ColorA: {r: 0.9647059, g: 0.36862746, b: 0.07058824, a: 1}
+    - _ColorB: {r: 0.99607843, g: 0.8627451, b: 0.43529412, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
