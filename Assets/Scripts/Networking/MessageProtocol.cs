@@ -99,4 +99,62 @@ public static class MessageProtocol
 
         return true;
     }
+
+
+    public static string EncodeFurnaceState(FurnaceState state)
+    {
+        return $"FURNACE|" +
+               $"{state.cubeGoal}|" +
+               $"{state.pyramidGoal}|" +
+               $"{state.totalCubes}|" +
+               $"{state.totalPyramids}|" +
+               $"{state.pendingCubes}|" +
+               $"{state.pendingPyramids}";
+    }
+
+    public static bool TryDecodeFurnaceState(
+        string message,
+        out FurnaceState state)
+    {
+        state = default;
+
+        if (string.IsNullOrEmpty(message))
+            return false;
+
+        string[] parts = message.Split('|');
+
+        // Message type + six integer values
+        if (parts.Length != 7 || parts[0] != "FURNACE")
+            return false;
+
+        if (!int.TryParse(parts[1], out int cubeGoal) ||
+            !int.TryParse(parts[2], out int pyramidGoal) ||
+            !int.TryParse(parts[3], out int totalCubes) ||
+            !int.TryParse(parts[4], out int totalPyramids) ||
+            !int.TryParse(parts[5], out int pendingCubes) ||
+            !int.TryParse(parts[6], out int pendingPyramids))
+        {
+            return false;
+        }
+
+        if (cubeGoal <= 0 || pyramidGoal <= 0 ||
+            totalCubes < 0 || totalPyramids < 0 ||
+            pendingCubes < 0 || pendingPyramids < 0)
+        {
+            return false;
+        }
+
+        state = new FurnaceState
+        {
+            cubeGoal = cubeGoal,
+            pyramidGoal = pyramidGoal,
+            totalCubes = totalCubes,
+            totalPyramids = totalPyramids,
+            pendingCubes = pendingCubes,
+            pendingPyramids = pendingPyramids
+        };
+
+        return true;
+    }
+
 }

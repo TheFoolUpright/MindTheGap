@@ -24,6 +24,7 @@ public class TcpClientConnection : MonoBehaviour
 
     [Header("Gameplay References")]
     [SerializeField] private ReceiverController navigatorReceiver;
+    [SerializeField] private FurnaceDisplay furnaceDisplay;
 
     private void Start()
     {
@@ -171,6 +172,32 @@ public class TcpClientConnection : MonoBehaviour
 
             return;
         }
+
+
+        if (MessageProtocol.TryDecodeFurnaceState(
+            message,
+            out FurnaceState state))
+        {
+            if (furnaceDisplay != null)
+            {
+                furnaceDisplay.ShowState(state);
+
+                Debug.Log(
+                    $"Navigator furnace updated: " +
+                    $"Cubes {state.totalCubes}/{state.cubeGoal}, " +
+                    $"Pyramids {state.totalPyramids}/{state.pyramidGoal}"
+                );
+            }
+            else
+            {
+                Debug.LogWarning(
+                    "Navigator FurnaceDisplay is not assigned."
+                );
+            }
+
+            return;
+        }
+
 
         switch (message)
         {

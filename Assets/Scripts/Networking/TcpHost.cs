@@ -10,8 +10,14 @@ using UnityEngine;
 
 public class TcpHost : MonoBehaviour
 {
+    [Header("Connection Settings")]
     [SerializeField] private int port = 8856;
+
+    [Header("Gameplay References")]
     [SerializeField] private ReceiverController explorerReceiver;
+
+    // FURNACE: Reference to the Explorer's furnace.
+    [SerializeField] private FurnaceController furnace;
 
     private TcpListener listener;
     private TcpClient navigatorClient;
@@ -22,6 +28,23 @@ public class TcpHost : MonoBehaviour
 
     private readonly object connectionLock = new();
     private readonly ConcurrentQueue<string> messageQueue = new();
+
+    // FURNACE: Listen for changes to furnace state.
+    private void OnEnable()
+    {
+        if (furnace != null)
+        {
+            furnace.StateChanged += OnFurnaceStateChanged;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (furnace != null)
+        {
+            furnace.StateChanged -= OnFurnaceStateChanged;
+        }
+    }
 
     private void Start()
     {
@@ -78,11 +101,8 @@ public class TcpHost : MonoBehaviour
                     navigatorClient = client;
                 }
 
-                messageQueue.Enqueue(
-                    $"CONNECTED:{client.Client.RemoteEndPoint}"
-                );
-
-                // Handle this client's messages until it disconnects.
+                // Handle this client's messages
+                // until it disconnects.
                 ReceiveMessages(client);
             }
             catch (SocketException)
@@ -122,9 +142,17 @@ public class TcpHost : MonoBehaviour
                 navigatorWriter = writer;
             }
 
+            // FURNACE:
+            // Notify the main thread only after
+            // the writer is ready to send messages.
+            messageQueue.Enqueue(
+                $"CONNECTED:{client.Client.RemoteEndPoint}"
+            );
+
             string line;
 
-            while (isRunning && (line = reader.ReadLine()) != null)
+            while (isRunning &&
+                   (line = reader.ReadLine()) != null)
             {
                 messageQueue.Enqueue(line);
             }
@@ -159,6 +187,8 @@ public class TcpHost : MonoBehaviour
 
     private void Update()
     {
+        // All messages are processed on
+        // Unity's main thread.
         while (messageQueue.TryDequeue(out string message))
         {
             HandleMessage(message);
@@ -172,6 +202,12 @@ public class TcpHost : MonoBehaviour
             Debug.Log(
                 $"Navigator connected: {message.Substring(10)}"
             );
+
+            // FURNACE:
+            // Send the current state when
+            // the Navigator connects.
+            SendCurrentFurnaceState();
+
             return;
         }
 
@@ -189,6 +225,7 @@ public class TcpHost : MonoBehaviour
 
         Debug.Log($"Host received: {message}");
 
+        // Existing receiver-symbol communication.
         if (MessageProtocol.TryParseSymbolMessage(
             message,
             out string messageType,
@@ -196,13 +233,20 @@ public class TcpHost : MonoBehaviour
         {
             if (messageType == MessageProtocol.SymbolSend)
             {
-                Debug.Log($"Explorer received symbol: {symbol}");
+                Debug.Log(
+                    $"Explorer received symbol: {symbol}"
+                );
 
-                // Show the symbol on the Explorer's receiver.
                 if (explorerReceiver != null)
+                {
                     explorerReceiver.AddSymbol(symbol);
+                }
                 else
-                    Debug.LogWarning("TcpHost has no Explorer Receiver assigned.");
+                {
+                    Debug.LogWarning(
+                        "TcpHost has no Explorer Receiver assigned."
+                    );
+                }
 
                 string confirmation =
                     MessageProtocol.CreateSymbolConfirmation(symbol);
@@ -232,6 +276,35 @@ public class TcpHost : MonoBehaviour
                 );
             }
         }
+    }
+
+    // FURNACE:
+    // Called whenever resources enter, leave,
+    // or are processed by the furnace.
+    private void OnFurnaceStateChanged(FurnaceState state)
+    {
+        string message =
+            MessageProtocol.EncodeFurnaceState(state);
+
+        SendToNavigator(message);
+
+        Debug.Log($"Furnace state sent: {message}");
+    }
+
+    // FURNACE:
+    // Send a complete snapshot when a
+    // Navigator connects or reconnects.
+    private void SendCurrentFurnaceState()
+    {
+        if (furnace == null)
+        {
+            Debug.LogWarning(
+                "TcpHost has no FurnaceController assigned."
+            );
+            return;
+        }
+
+        OnFurnaceStateChanged(furnace.State);
     }
 
     public void StopHost()

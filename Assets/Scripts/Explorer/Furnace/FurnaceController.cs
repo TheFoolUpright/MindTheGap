@@ -6,8 +6,15 @@ using UnityEngine;
 [Serializable]
 public struct FurnaceState
 {
+    // Required resources
+    public int cubeGoal;
+    public int pyramidGoal;
+
+    // Already processed resources
     public int totalCubes;
     public int totalPyramids;
+
+    // Resources inside the furnace, not yet processed
     public int pendingCubes;
     public int pendingPyramids;
 }
@@ -17,6 +24,10 @@ public class FurnaceController : MonoBehaviour
     [Header("Prototype Settings")]
     [SerializeField]
     private bool processOnEntry = false;
+
+    [Header("Resource Goals")]
+    [SerializeField, Min(1)] private int cubeGoal = 10;
+    [SerializeField, Min(1)] private int pyramidGoal = 10;
 
     private readonly HashSet<FurnaceResource> contents = new();
 
@@ -45,8 +56,12 @@ public class FurnaceController : MonoBehaviour
 
             return new FurnaceState
             {
+                cubeGoal = cubeGoal,
+                pyramidGoal = pyramidGoal,
+
                 totalCubes = totalCubes,
                 totalPyramids = totalPyramids,
+
                 pendingCubes = pendingCubes,
                 pendingPyramids = pendingPyramids
             };
