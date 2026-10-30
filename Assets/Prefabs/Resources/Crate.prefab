@@ -575,8 +575,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec84739b1b442d04abe179f13a519464, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::CutPath
-  width: 0.65
-  height: 0.645
+  width: 0.658
+  height: 0.658
   edgeTolerance: 0.025
   depthTolerance: 0.03
   previewCutter: {fileID: 0}
