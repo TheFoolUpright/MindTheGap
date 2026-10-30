@@ -60,7 +60,7 @@ public class ReceiverNetworkState : NetworkBehaviour
             return;
         }
 
-        if (!MessageProtocol.IsValidSymbol(symbol))
+        if (!ReceiverSymbols.IsValidSymbol(symbol))
         {
             Debug.LogWarning($"Invalid symbol: {symbol}");
             return;
@@ -85,7 +85,7 @@ public class ReceiverNetworkState : NetworkBehaviour
 
         string symbolName = symbol.ToString();
 
-        if (!MessageProtocol.IsValidSymbol(symbolName))
+        if (!ReceiverSymbols.IsValidSymbol(symbolName))
         {
             Debug.LogWarning(
                 $"Rejected invalid symbol: {symbolName}"
@@ -137,16 +137,16 @@ public class ReceiverNetworkState : NetworkBehaviour
         GUILayout.Label("RECEIVER NETWORK TEST");
 
         if (GUILayout.Button("Send LIGHT"))
-            SendSymbol(MessageProtocol.Light);
+            SendSymbol(ReceiverSymbols.Light);
 
         if (GUILayout.Button("Send DOOR"))
-            SendSymbol(MessageProtocol.Door);
+            SendSymbol(ReceiverSymbols.Door);
 
         if (GUILayout.Button("Send ENEMY"))
-            SendSymbol(MessageProtocol.Enemy);
+            SendSymbol(ReceiverSymbols.Enemy);
 
         if (GUILayout.Button("Send RETURN"))
-            SendSymbol(MessageProtocol.Return);
+            SendSymbol(ReceiverSymbols.Return);
 
         GUILayout.EndArea();
     }
