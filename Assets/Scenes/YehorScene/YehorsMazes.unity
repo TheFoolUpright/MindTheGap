@@ -10114,6 +10114,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
+--- !u!114 &499223201982831090 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4189861720583654351, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
+  m_PrefabInstance: {fileID: 499223201982831089}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 389eb2feb78bbc24a89239a4f2e5f8c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CutterTool
 --- !u!1001 &3434453593230826225
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -10191,6 +10202,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Crate
       objectReference: {fileID: 0}
+    - target: {fileID: 2794195527157533804, guid: a2e99b572e0d4564cbbe49ee731eaae4, type: 3}
+      propertyPath: previewCutter
+      value: 
+      objectReference: {fileID: 499223201982831090}
     - target: {fileID: 5981606692279890222, guid: a2e99b572e0d4564cbbe49ee731eaae4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
