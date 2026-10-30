@@ -21,7 +21,7 @@ public class ReceiverController : MonoBehaviour
 
     public void AddSymbol(string symbol)
     {
-        if (!MessageProtocol.IsValidSymbol(symbol))
+        if (!ReceiverSymbols.IsValidSymbol(symbol))
         {
             Debug.LogWarning($"Invalid receiver symbol: {symbol}");
             return;
