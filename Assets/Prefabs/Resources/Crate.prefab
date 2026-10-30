@@ -540,6 +540,7 @@ GameObject:
   - component: {fileID: 1763654646653039006}
   - component: {fileID: 2794195527157533804}
   - component: {fileID: 2435597622505006619}
+  - component: {fileID: 109141641297490074}
   m_Layer: 0
   m_Name: CutPath
   m_TagString: Untagged
@@ -600,6 +601,41 @@ MonoBehaviour:
   onCutCompleted:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &109141641297490074
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6808425932831578259}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06a8578478cf6b04fbd2862fb3653536, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CuttingSeamUI
+  front:
+    canvas: {fileID: 5139189597802985010}
+    cutA: {fileID: 7700000000000000002}
+    cutB: {fileID: 7700000000000000006}
+    marker: {fileID: 7700000000000000010}
+  right:
+    canvas: {fileID: 7700000000000000015}
+    cutA: {fileID: 7700000000000000021}
+    cutB: {fileID: 7700000000000000025}
+    marker: {fileID: 7700000000000000029}
+  back:
+    canvas: {fileID: 7700000000000000034}
+    cutA: {fileID: 7700000000000000040}
+    cutB: {fileID: 7700000000000000044}
+    marker: {fileID: 7700000000000000048}
+  left:
+    canvas: {fileID: 7700000000000000053}
+    cutA: {fileID: 7700000000000000059}
+    cutB: {fileID: 7700000000000000063}
+    marker: {fileID: 7700000000000000067}
+  cutter: {fileID: 0}
+  visibleDistance: 2
+  alwaysVisible: 0
 --- !u!1 &6809224884444953104
 GameObject:
   m_ObjectHideFlags: 0
