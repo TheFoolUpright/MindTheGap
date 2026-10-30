@@ -34,6 +34,23 @@ public class CuttingProgress : MonoBehaviour
     // 0 = not chosen, 1 = forward, -1 = backward.
     private int direction;
 
+    // They allow the UI to read the state of the cut without changing it.
+    public bool HasStarted
+    {
+        get { return started; }
+    }
+
+    public float StartDistance
+    {
+        get { return startDistance; }
+    }
+
+    public int Direction
+    {
+        get { return direction; }
+    }
+    // End of the UI reading section ------------------
+
     // Returns the fraction of the path that has been cut, from 0 to 1.
     public float Progress
     {

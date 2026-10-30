@@ -14,7 +14,7 @@ public class CutPath : MonoBehaviour
     [SerializeField] private CutterTool previewCutter;
 
     // Returns a corner of the rectangle in world space.
-    private Vector3 GetCorner(int index)
+    public Vector3 GetCorner(int index)
     {
         float halfWidth = width * 0.5f;
         float halfHeight = height * 0.5f;
