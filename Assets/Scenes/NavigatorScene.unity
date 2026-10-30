@@ -1541,6 +1541,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1236563464}
   - component: {fileID: 1236563465}
+  - component: {fileID: 1236563466}
   m_Layer: 0
   m_Name: FurnaceDisplay
   m_TagString: Untagged
@@ -1556,7 +1557,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1236563463}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: -0.53, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -1583,6 +1584,20 @@ MonoBehaviour:
   pyramidBarFill: {fileID: 1449661527}
   totalsText: {fileID: 0}
   pendingText: {fileID: 0}
+--- !u!114 &1236563466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1236563463}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97afb07f54752b64299ede29a51cbf59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FurnaceNetworkBinding
+  furnace: {fileID: 0}
+  display: {fileID: 1236563465}
 --- !u!1 &1252387028
 GameObject:
   m_ObjectHideFlags: 0
@@ -1608,7 +1623,7 @@ Transform:
   m_GameObject: {fileID: 1252387028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.8, y: -0.3, z: 0}
+  m_LocalPosition: {x: 0.8, y: -0.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2473,7 +2488,7 @@ Transform:
   m_GameObject: {fileID: 1836757043}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.8, y: 0.3, z: 0}
+  m_LocalPosition: {x: 0.8, y: 0.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2505,7 +2520,7 @@ Transform:
   m_GameObject: {fileID: 1946853806}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1, z: -8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2524,6 +2539,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1967502342}
   - component: {fileID: 1967502343}
+  - component: {fileID: 1967502344}
   m_Layer: 0
   m_Name: NavigatorReceiver
   m_TagString: Untagged
@@ -2559,6 +2575,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ReceiverController
   maxHistory: 3
+--- !u!114 &1967502344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1967502341}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bcd6423a7f9ad94fb36387c47ce9e17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReceiverNetworkBinding
 --- !u!1 &2004372727
 GameObject:
   m_ObjectHideFlags: 0

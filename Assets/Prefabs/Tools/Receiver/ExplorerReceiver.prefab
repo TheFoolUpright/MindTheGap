@@ -109,6 +109,7 @@ GameObject:
   - component: {fileID: 6620628940453619619}
   - component: {fileID: 8294445234836313081}
   - component: {fileID: 1548472295703756778}
+  - component: {fileID: 4033985293532721007}
   m_Layer: 0
   m_Name: ExplorerReceiver
   m_TagString: Untagged
@@ -305,6 +306,18 @@ MonoBehaviour:
   m_LimitAngularVelocity: 0
   m_MaxLinearVelocityDelta: 10
   m_MaxAngularVelocityDelta: 20
+--- !u!114 &4033985293532721007
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1002267348580961787}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9bcd6423a7f9ad94fb36387c47ce9e17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ReceiverNetworkBinding
 --- !u!1 &1140029010428906998
 GameObject:
   m_ObjectHideFlags: 0
