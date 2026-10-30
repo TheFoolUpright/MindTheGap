@@ -10202,10 +10202,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: Crate
       objectReference: {fileID: 0}
+    - target: {fileID: 2435597622505006619, guid: a2e99b572e0d4564cbbe49ee731eaae4, type: 3}
+      propertyPath: cutter
+      value: 
+      objectReference: {fileID: 499223201982831090}
+    - target: {fileID: 2435597622505006619, guid: a2e99b572e0d4564cbbe49ee731eaae4, type: 3}
+      propertyPath: onCutCompleted.m_PersistentCalls.m_Calls.Array.size
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2435597622505006619, guid: a2e99b572e0d4564cbbe49ee731eaae4, type: 3}
+      propertyPath: onCutCompleted.m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 2794195527157533804, guid: a2e99b572e0d4564cbbe49ee731eaae4, type: 3}
       propertyPath: previewCutter
       value: 
       objectReference: {fileID: 499223201982831090}
+    - target: {fileID: 4115639816066703038, guid: a2e99b572e0d4564cbbe49ee731eaae4, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5981606692279890222, guid: a2e99b572e0d4564cbbe49ee731eaae4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

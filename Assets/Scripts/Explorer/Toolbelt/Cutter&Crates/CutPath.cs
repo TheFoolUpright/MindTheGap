@@ -125,6 +125,62 @@ public class CutPath : MonoBehaviour
         return start + sideDirection * positionOnSide;
     }
 
+
+    // GetLenght and GetPointAtDistance are used to find the position of the cutter along the path
+
+    // This function returns FULL perimeter length in world units.
+    public float GetLength()
+    {
+        float length = 0f;
+
+        for (int side = 0; side < 4; side++)
+        {
+            length += Vector3.Distance(
+                GetCorner(side),
+                GetCorner((side + 1) % 4)
+            );
+        }
+
+        return length;
+    }
+
+    // returns the world position of the cutter along the path,
+    // based on the distance along the perimeter.
+    public Vector3 GetPointAtDistance(float distance)
+    {
+        float length = GetLength();
+
+        if (length <= 0.00001f)
+            return transform.position;
+
+        // Wrap distances around the closed path.
+        distance = Mathf.Repeat(distance, length);
+
+        for (int side = 0; side < 4; side++)
+        {
+            Vector3 start = GetCorner(side);
+            Vector3 end = GetCorner((side + 1) % 4);
+
+            float sideLength = Vector3.Distance(start, end);
+
+            if (sideLength <= 0.00001f)
+                continue;
+
+            if (distance <= sideLength)
+            {
+                return Vector3.Lerp(
+                    start,
+                    end,
+                    distance / sideLength
+                );
+            }
+
+            distance -= sideLength;
+        }
+
+        return GetCorner(0);
+    }
+
     // Draws an editor preview. This does not render the seam in the game.
     private void OnDrawGizmos()
     {
