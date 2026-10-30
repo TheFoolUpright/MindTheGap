@@ -8,10 +8,22 @@ public class LobbyHUD : MonoBehaviour
 
     private string serverAddress = "127.0.0.1";
 
+
     private void OnGUI()
     {
+        float menuWidth = Mathf.Min(360f, Screen.width - 40f);
+        float menuHeight = Mathf.Min(400f, Screen.height - 40f);
+
+        // Prevent negative sizes in very small windows.
+        menuWidth = Mathf.Max(100f, menuWidth);
+        menuHeight = Mathf.Max(100f, menuHeight);
+
+        // Center the menu in the current game window.
+        float x = (Screen.width - menuWidth) / 2f;
+        float y = (Screen.height - menuHeight) / 2f;
+
         GUILayout.BeginArea(
-            new Rect(20, 20, 360, 400),
+            new Rect(x, y, menuWidth, menuHeight),
             GUI.skin.box
         );
 
@@ -41,6 +53,7 @@ public class LobbyHUD : MonoBehaviour
 
         GUILayout.EndArea();
     }
+
 
     private void DrawConnectionMenu()
     {

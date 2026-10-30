@@ -2088,6 +2088,7 @@ GameObject:
   m_Component:
   - component: {fileID: 81742619}
   - component: {fileID: 81742618}
+  - component: {fileID: 81742620}
   m_Layer: 0
   m_Name: Furnace
   m_TagString: Untagged
@@ -2128,6 +2129,20 @@ Transform:
   - {fileID: 1661075301}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+--- !u!114 &81742620
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 81742617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 97afb07f54752b64299ede29a51cbf59, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::FurnaceNetworkBinding
+  furnace: {fileID: 81742618}
+  display: {fileID: 0}
 --- !u!1 &88789718
 GameObject:
   m_ObjectHideFlags: 0
@@ -38962,7 +38977,7 @@ PrefabInstance:
     - target: {fileID: 3759808714873969910, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: b868ae9a1452458d936493341eb94c72, type: 2}
+      objectReference: {fileID: 2100000, guid: 61a59c23890c4432a47a6d796c3d4d3f, type: 2}
     - target: {fileID: 9113011546711674679, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.021329107
