@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 6948950124211280753}
   - component: {fileID: 6020597294099680485}
   - component: {fileID: -1532702771163499865}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Pyramid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -232,7 +232,7 @@ GameObject:
   - component: {fileID: 4047600664089154106}
   - component: {fileID: 7873963596905698395}
   - component: {fileID: 5164684093102088846}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Visuals
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -321,7 +321,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8466259476369837591}
   - component: {fileID: 9078655958273727565}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Pyramid_COL
   m_TagString: Untagged
   m_Icon: {fileID: 0}
