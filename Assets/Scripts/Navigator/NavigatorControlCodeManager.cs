@@ -37,6 +37,9 @@ public class NavigatorControlCodeManager : MonoBehaviour
     [SerializeField, Min(0)] private int dialMinimum = 0;
     [SerializeField, Min(0)] private int dialMaximum = 9;
 
+    public int DialMinimum => dialMinimum;
+    public int DialMaximum => dialMaximum;
+
     private readonly Dictionary<string, ControlCode> doorCodes = new();
 
     private readonly Dictionary<int, LightCodePair> lightCodes = new();

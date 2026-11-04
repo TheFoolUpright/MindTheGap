@@ -44,19 +44,33 @@ public class MazeLayoutData : ScriptableObject
     [SerializeField] private bool hasExplorerSpawn;
     [SerializeField] private Vector2Int explorerSpawnCell;
 
+    [Header("Spawn Locations")]
+    [SerializeField]
+    private Vector2Int[] enemySpawnCells =
+    Array.Empty<Vector2Int>();
+
+    [SerializeField]
+    private Vector2Int[] resourceSpawnCells =
+        Array.Empty<Vector2Int>();
+
     public int LayoutId => layoutId;
     public int Width => width;
     public int Height => height;
     public float CellSize => cellSize;
     public IReadOnlyList<MazeLightData> Lights => lights ?? Array.Empty<MazeLightData>();
-    public bool HasExplorerSpawn => hasExplorerSpawn;
-    public Vector2Int ExplorerSpawnCell => explorerSpawnCell;
+    public IReadOnlyList<Vector2Int> EnemySpawnCells =>
+    enemySpawnCells ?? Array.Empty<Vector2Int>();
+
+    public IReadOnlyList<Vector2Int> ResourceSpawnCells =>
+        resourceSpawnCells ?? Array.Empty<Vector2Int>();
 
     public bool IsConfigured =>
         width > 0 && height > 0 && cellSize > 0f &&
         verticalEdges != null && horizontalEdges != null &&
         verticalEdges.Length == (width + 1) * height &&
         horizontalEdges.Length == width * (height + 1);
+
+
 
     public MazeEdgeType GetVerticalEdge(int x, int y)
     {
@@ -113,21 +127,36 @@ public class MazeLayoutData : ScriptableObject
 
 #if UNITY_EDITOR
     // Called only by the Tiled importer after it has validated all incoming data.
-    public void SetImportedData(int id, int newWidth, int newHeight,
-        float newCellSize, MazeEdgeType[] newVertical,
-        MazeEdgeType[] newHorizontal, MazeLightData[] newLights,
-        Vector2Int newSpawnCell)
+
+    public void SetImportedData(
+        int id,
+        int newWidth,
+        int newHeight,
+        float newCellSize,
+        MazeEdgeType[] newVertical,
+        MazeEdgeType[] newHorizontal,
+        MazeLightData[] newLights,
+        Vector2Int[] newEnemySpawnCells,
+        Vector2Int[] newResourceSpawnCells)
     {
         layoutId = id;
         width = newWidth;
         height = newHeight;
         cellSize = newCellSize;
+
         verticalEdges = (MazeEdgeType[])newVertical.Clone();
         horizontalEdges = (MazeEdgeType[])newHorizontal.Clone();
         lights = (MazeLightData[])newLights.Clone();
-        hasExplorerSpawn = true;
-        explorerSpawnCell = newSpawnCell;
+
+        enemySpawnCells =
+            (Vector2Int[])newEnemySpawnCells.Clone();
+
+        resourceSpawnCells =
+            (Vector2Int[])newResourceSpawnCells.Clone();
+
     }
+
+
 
     // Legacy helper retained only so the old CreateTestMazeLayout editor script
     // still compiles. Use the Tiled importer for new layouts.
@@ -140,7 +169,8 @@ public class MazeLayoutData : ScriptableObject
         verticalEdges = new MazeEdgeType[(width + 1) * height];
         horizontalEdges = new MazeEdgeType[width * (height + 1)];
         lights = Array.Empty<MazeLightData>();
-        hasExplorerSpawn = false;
+        enemySpawnCells = Array.Empty<Vector2Int>();
+        resourceSpawnCells = Array.Empty<Vector2Int>();
 
         for (int y = 0; y < height; y++)
         {

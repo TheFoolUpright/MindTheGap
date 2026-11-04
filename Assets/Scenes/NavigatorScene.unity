@@ -11523,6 +11523,8 @@ GameObject:
   - component: {fileID: 1072929506}
   - component: {fileID: 1072929507}
   - component: {fileID: 1072929508}
+  - component: {fileID: 1072929510}
+  - component: {fileID: 1072929509}
   m_Layer: 0
   m_Name: NavigatorMapSystem
   m_TagString: Untagged
@@ -11615,6 +11617,32 @@ MonoBehaviour:
   layout: {fileID: 11400000, guid: 37659acfe353e254bb799b2bbd6a1447, type: 2}
   dialMinimum: 0
   dialMaximum: 9
+--- !u!114 &1072929509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072929502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a16f8272f9d500648b0a82be6b8d1c9a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NavigatorKeyboardInput
+  codeEntry: {fileID: 1072929510}
+--- !u!114 &1072929510
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072929502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3519ccd600d365f468d8df74413d5289, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NavigatorCodeEntry
+  codeManager: {fileID: 1072929508}
 --- !u!1001 &1084510325
 PrefabInstance:
   m_ObjectHideFlags: 0

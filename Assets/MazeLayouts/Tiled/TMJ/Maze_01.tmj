@@ -2042,22 +2042,58 @@
          "y":0
         }, 
         {
-         "color":"#22c55e",
+         "color":"#ff0000",
          "draworder":"topdown",
          "id":4,
-         "name":"Spawns",
+         "name":"EnemySpawns",
          "objects":[
                 {
                  "height":0,
-                 "id":96,
-                 "name":"ExplorerSpawn",
+                 "id":105,
+                 "name":"Enemy_01",
                  "point":true,
+                 "properties":[
+                        {
+                         "name":"code",
+                         "type":"int",
+                         "value":104
+                        }],
                  "rotation":0,
-                 "type":"ExplorerSpawn",
+                 "type":"EnemySpawn",
                  "visible":true,
                  "width":0,
-                 "x":240,
-                 "y":16
+                 "x":80,
+                 "y":64
+                }],
+         "opacity":1,
+         "type":"objectgroup",
+         "visible":true,
+         "x":0,
+         "y":0
+        }, 
+        {
+         "color":"#ff00ff",
+         "draworder":"topdown",
+         "id":6,
+         "name":"ResourceSpawns",
+         "objects":[
+                {
+                 "height":0,
+                 "id":106,
+                 "name":"Resource_01",
+                 "point":true,
+                 "properties":[
+                        {
+                         "name":"code",
+                         "type":"int",
+                         "value":104
+                        }],
+                 "rotation":0,
+                 "type":"ResourceSpawn",
+                 "visible":true,
+                 "width":0,
+                 "x":16,
+                 "y":96
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2100,8 +2136,8 @@
          "x":0,
          "y":0
         }],
- "nextlayerid":6,
- "nextobjectid":104,
+ "nextlayerid":9,
+ "nextobjectid":107,
  "orientation":"orthogonal",
  "properties":[
         {
