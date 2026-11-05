@@ -1,40 +1,58 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class EnemyPatrol : MonoBehaviour
 {
-    [Header("Maze")] // Delete and move to EnemyManager when ready!!!
     [SerializeField] private ExplorerMazeBuilder mazeBuilder;
 
-    [Header("Patrol")]
-    [SerializeField] private float pauseDuration = 1f;
-    [SerializeField] private float retryDelay = 1f;
-    [SerializeField] private int destinationAttempts = 20;
+    // Same order as MazeDirection: North, East, South, West.
+    private static readonly Vector2Int[] directions =
+    {
+        Vector2Int.up,
+        Vector2Int.right,
+        Vector2Int.down,
+        Vector2Int.left
+    }; // Directions to neighboring cells in the maze.
+       // We are using Vector2Int and not Vector2, because we are dealing with discrete maze cells, not continuous positions.
+       // We need not float, but integer coordinates to represent the maze grid:3...
+
+    private readonly List<Vector2Int> exits = new List<Vector2Int>(4);
 
     private NavMeshAgent agent;
-    private NavMeshPath patrolPath;
-
-    private bool isMoving;
-    private float waitTimer;
-
-    private void Awake()
-    {
-        agent = GetComponent<NavMeshAgent>();
-        patrolPath = new NavMeshPath();
-    }
+    private MazeLayoutData layout;
+    private Vector2Int targetCell;
+    private Vector2Int previousCell;
 
     private void Start()
     {
-        if (mazeBuilder == null || mazeBuilder.Layout == null || !mazeBuilder.Layout.IsConfigured)
+        agent = GetComponent<NavMeshAgent>();
+
+        if (mazeBuilder == null || mazeBuilder.Layout == null ||
+            !mazeBuilder.Layout.IsConfigured || !agent.isOnNavMesh)
         {
-            Debug.LogError("Assign a maze builder with a valid layout.", this);
+            Debug.LogError("Assign a valid maze and place the enemy on its NavMesh.", this);
+            enabled = false;
+            return;
         }
 
-        if (!agent.isOnNavMesh)
+        layout = mazeBuilder.Layout;
+
+        Vector3 localPosition = mazeBuilder.transform.InverseTransformPoint(agent.nextPosition);
+
+        targetCell = new Vector2Int(Mathf.FloorToInt(localPosition.x / layout.CellSize),
+                                    Mathf.FloorToInt(localPosition.z / layout.CellSize)); // Convert world position to maze cell coordinates.
+
+        if (!IsInsideMaze(targetCell) || agent.Raycast(GetCenter(targetCell), out _))
         {
-            Debug.LogError("Place the enemy on the baked NavMesh.", this);
+            Debug.LogError("Place the enemy near the center of a walkable cell.", this);
+            enabled = false;
+            return;
         }
+
+        previousCell = targetCell;
+        agent.ResetPath();
     }
 
     private void Update()
@@ -42,114 +60,60 @@ public class EnemyPatrol : MonoBehaviour
         if (!agent.enabled || !agent.isOnNavMesh)
             return;
 
-        if (isMoving)
-        {
-            UpdateMovement();
-        }
-        else
-        {
-            UpdateWaiting();
-        }
-    }
+        // Calculate the offset from the agent's current position to the center of the target cell.
+        Vector3 offset = GetCenter(targetCell) - agent.nextPosition;
+        // Ignore vertical offset to keep the agent on the same plane.
+        offset.y = 0f;
 
-    private void UpdateMovement()
-    {
-        if (agent.pathPending)
-            return;
-
-        if (agent.pathStatus != NavMeshPathStatus.PathComplete)
+        if (offset.sqrMagnitude <= 0.0001f)
         {
-            StopAndWait(retryDelay);
+            ChooseNextCell();
             return;
         }
 
-        bool reachedDestination = agent.remainingDistance <= agent.stoppingDistance;
-
-        if (!agent.hasPath || reachedDestination)
-            StopAndWait(pauseDuration);
+        agent.Move(Vector3.ClampMagnitude(offset, agent.speed * Time.deltaTime));
+        // he likes to move it move it
     }
 
-    private void UpdateWaiting()
+    private void ChooseNextCell()
     {
-        waitTimer -= Time.deltaTime;
+        exits.Clear(); // Clear the list of exits before finding new ones.
 
-        if (waitTimer > 0f)
-            return;
-
-        if (!TryStartPatrol())
-            waitTimer = retryDelay;
-    }
-
-    private bool TryStartPatrol()
-    {
-        for (int attempt = 0; attempt < destinationAttempts; attempt++) // Try to find a valid destination multiple times.
+        // Check all four neighboring cells to see if they are reachable and add them to the list of exits.
+        for (int i = 0; i < directions.Length; i++)
         {
-            Vector3 destination = GetRandomCellPosition();
+            Vector2Int neighbor = targetCell + directions[i];
 
-            if (!TryCreatePath(destination))
+            if (!IsInsideMaze(neighbor))
                 continue;
 
-            agent.isStopped = false;
+            if (layout.GetEdge(targetCell.x, targetCell.y, (MazeDirection)i) != MazeEdgeType.Open)
+                continue; // Check if the edge in the direction of the neighbor is open.
 
-            if (!agent.SetPath(patrolPath))
-                continue;
-
-            isMoving = true;
-            return true;
+            if (!agent.Raycast(GetCenter(neighbor), out _))
+                exits.Add(neighbor); // Add the neighbor to the list of exits if it is reachable by the agent (no obstacles in the way).
         }
 
-        return false;
+        if (exits.Count == 0)
+            return;
+
+        if (exits.Count > 1)
+            exits.Remove(previousCell);
+
+        previousCell = targetCell;
+        targetCell = exits[Random.Range(0, exits.Count)];
     }
 
-    private Vector3 GetRandomCellPosition() // Get a random position from the existing layout, in world space.
+    // finding Center of the cell in world space
+    private Vector3 GetCenter(Vector2Int cell)
     {
-        MazeLayoutData layout = mazeBuilder.Layout;
-
-        // Randomly select a cell within the layout's dimensions.
-        int column = Random.Range(0, layout.Width);
-        int row = Random.Range(0, layout.Height);
-
-        // Get the local position of the cell's center and convert it to world space.
-        Vector3 localPosition = layout.GetCellCenterLocal(column, row);
-
-        return mazeBuilder.transform.TransformPoint(localPosition);
+        Vector3 localCenter = layout.GetCellCenterLocal(cell.x, cell.y);
+        return mazeBuilder.transform.TransformPoint(localCenter);
     }
 
-    private bool TryCreatePath(Vector3 destination)
+    private bool IsInsideMaze(Vector2Int cell)
     {
-        // Find a nearby point on the NavMesh.
-        if (!NavMesh.SamplePosition(destination, out NavMeshHit hit, 0.5f, agent.areaMask))
-        {
-            return false;
-        }
-
-        // Avoid choosing a destination too close to the enemy.
-        float distance = Vector3.Distance(agent.nextPosition, hit.position);
-
-        if (distance < 1f)
-            return false;
-
-        // Accept only routes that reach the destination completely.
-        if (!agent.CalculatePath(hit.position, patrolPath))
-            return false;
-
-        return patrolPath.status == NavMeshPathStatus.PathComplete;
-    }
-
-    private void StopAndWait(float duration)
-    {
-        agent.ResetPath();
-
-        isMoving = false;
-        waitTimer = duration;
-    }
-
-    private void OnDisable()
-    {
-        if (agent != null && agent.enabled && agent.isOnNavMesh)
-            agent.ResetPath();
-
-        isMoving = false;
-        waitTimer = 0f;
+        return cell.x >= 0 && cell.x < layout.Width &&
+               cell.y >= 0 && cell.y < layout.Height;
     }
 }

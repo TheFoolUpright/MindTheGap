@@ -4646,9 +4646,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyPatrol
   mazeBuilder: {fileID: 1005871917}
-  pauseDuration: 1
-  retryDelay: 1
-  destinationAttempts: 20
 --- !u!195 &214513315
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -4680,7 +4677,7 @@ Transform:
   m_GameObject: {fileID: 214513313}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 8.83, y: 0.3, z: 19.01}
+  m_LocalPosition: {x: 8.74, y: 0.3, z: 19.3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -14104,7 +14101,7 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.06666667
+  m_VoxelSize: 0.13333334
   m_MinRegionArea: 2
   m_NavMeshData: {fileID: 23800000, guid: c3bde7a9197376b43b552abc22a9e039, type: 2}
   m_BuildHeightMesh: 0
