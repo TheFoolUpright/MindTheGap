@@ -948,6 +948,18 @@ PrefabInstance:
       propertyPath: m_StartingSelectedInteractable
       value: 
       objectReference: {fileID: 133974289}
+    - target: {fileID: 1318715347925854873, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
+      propertyPath: bodySockets.Array.data[0].heightRatio
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1318715347925854873, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
+      propertyPath: bodySockets.Array.data[1].heightRatio
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1318715347925854873, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
+      propertyPath: bodySockets.Array.data[2].heightRatio
+      value: 0.5
+      objectReference: {fileID: 0}
     - target: {fileID: 1417464957926155384, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_StartingSelectedInteractable
       value: 
@@ -1310,6 +1322,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8806329115733545878, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9059786329452581396, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
+      propertyPath: m_CameraYOffset
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9059786329452581396, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
+      propertyPath: m_RequestedTrackingOriginMode
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
