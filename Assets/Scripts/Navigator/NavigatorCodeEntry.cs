@@ -205,7 +205,6 @@ public class NavigatorCodeEntry : MonoBehaviour
     private void Notify(string message)
     {
         Feedback = message;
-        Debug.Log($"[Navigator Code Entry] {message}", this);
         InputChanged?.Invoke();
     }
 }

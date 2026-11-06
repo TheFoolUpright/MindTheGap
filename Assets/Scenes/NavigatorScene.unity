@@ -12476,6 +12476,7 @@ GameObject:
   - component: {fileID: 1072929508}
   - component: {fileID: 1072929510}
   - component: {fileID: 1072929509}
+  - component: {fileID: 1072929511}
   m_Layer: 0
   m_Name: NavigatorMapSystem
   m_TagString: Untagged
@@ -12602,6 +12603,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NavigatorCodeEntry
   codeManager: {fileID: 1072929508}
+--- !u!114 &1072929511
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072929502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd4b6acccef1c74fa6e73ba6b2db717, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NavigatorDoorCodeHandler
+  codeEntry: {fileID: 1072929510}
+  generatedMapRoot: {fileID: 1254977764}
 --- !u!224 &1078720753 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8390807148070487057, guid: bb6a1ae37d9b8cd4b9cb6d8174a9effd, type: 3}

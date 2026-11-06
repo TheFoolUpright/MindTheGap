@@ -1,10 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-public enum MazeDoorState
-{
-    Closed,
-    Open
-}
+
 public class NavigatorDoorNode : MonoBehaviour
 {
     [Header("Door Identity")]
@@ -27,6 +23,7 @@ public class NavigatorDoorNode : MonoBehaviour
     [SerializeField]
     private MazeDoorState currentState =
         MazeDoorState.Closed;
+
     public MazeDoorState CurrentState => currentState;
     public int EdgeX => edgeX;
     public int EdgeY => edgeY;
@@ -45,19 +42,19 @@ public class NavigatorDoorNode : MonoBehaviour
     private void OnEnable()
     {
         UpdateAppearance();
+
     }
+
 
     public void SetState(MazeDoorState newState)
     {
-        Debug.Log(
-        $"Door {DoorId}: {currentState} -> {newState}",
-        this
-    );
-
-
         currentState = newState;
         UpdateAppearance();
+
     }
+
+
+
 
     public void ToggleState()
     {

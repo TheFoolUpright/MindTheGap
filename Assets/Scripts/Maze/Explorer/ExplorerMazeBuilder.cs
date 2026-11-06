@@ -80,8 +80,14 @@ public class ExplorerMazeBuilder : MonoBehaviour
                 if (edge == MazeEdgeType.Open) continue;
 
                 Vector3 position = new Vector3(x * cell, centerHeight, (y + 0.5f) * cell);
-                CreateEdge(edge, $"{edge}_Vertical_{x}_{y}", position,
-                    Quaternion.Euler(0f, 90f, 0f), cell, walls, doors);
+                CreateEdge(edge,
+                    edge == MazeEdgeType.Door
+                        ? $"Door_V_{x}_{y}"
+                        : $"Wall_Vertical_{x}_{y}",
+                    position,
+                    Quaternion.Euler(0f, 90f, 0f),
+                    cell, walls, doors,
+                    x, y, true);
 
                 if (edge == MazeEdgeType.Wall) wallCount++; else doorCount++;
             }
@@ -96,8 +102,14 @@ public class ExplorerMazeBuilder : MonoBehaviour
                 if (edge == MazeEdgeType.Open) continue;
 
                 Vector3 position = new Vector3((x + 0.5f) * cell, centerHeight, y * cell);
-                CreateEdge(edge, $"{edge}_Horizontal_{x}_{y}", position,
-                    Quaternion.identity, cell, walls, doors);
+                CreateEdge(edge,
+                    edge == MazeEdgeType.Door
+                        ? $"Door_H_{x}_{y}"
+                        : $"Wall_Horizontal_{x}_{y}",
+                    position,
+                    Quaternion.identity,
+                    cell, walls, doors,
+                    x, y, false);
 
                 if (edge == MazeEdgeType.Wall) wallCount++; else doorCount++;
             }
@@ -149,22 +161,71 @@ public class ExplorerMazeBuilder : MonoBehaviour
             new Vector3(width, floorThickness, depth), true);
     }
 
-    private void CreateEdge(MazeEdgeType edge, string name, Vector3 position,
-                            Quaternion rotation, float cellSize,
-                            Transform walls, Transform doors)
+
+    private void CreateEdge(
+        MazeEdgeType edge,
+        string name,
+        Vector3 position,
+        Quaternion rotation,
+        float cellSize,
+        Transform walls,
+        Transform doors,
+        int edgeX,
+        int edgeY,
+        bool isVertical)
     {
         bool door = edge == MazeEdgeType.Door;
+
         GameObject prefab = door ? doorPrefab : wallPrefab;
         Transform parent = door ? doors : walls;
 
         float length = door
             ? Mathf.Max(0.1f, cellSize - wallThickness)
-            : cellSize + wallThickness; // Retain corner-overlap fix.
+            : cellSize + wallThickness;
 
-        // Author wall and door prototype meshes with local X as the long axis.
-        SpawnPrefab(prefab, parent, name, position, rotation,
-            new Vector3(length, wallHeight, wallThickness), !door);
+        // Keep our existing geometry and scaling behavior.
+        GameObject instance = SpawnPrefab(
+            prefab,
+            parent,
+            name,
+            position,
+            rotation,
+            new Vector3(length, wallHeight, wallThickness),
+            !door
+        );
+
+        // Walls don't need door identities.
+        if (!door)
+            return;
+
+        // Get the ExplorerDoor component from the new door.
+        ExplorerDoor explorerDoor =
+            instance.GetComponent<ExplorerDoor>();
+
+        if (explorerDoor == null)
+        {
+            Debug.LogError(
+                $"Door prefab is missing ExplorerDoor: {name}",
+                instance
+            );
+            return;
+        }
+
+        // Record changes for Unity's Undo system.
+        Undo.RecordObject(
+            explorerDoor,
+            "Configure Explorer Door Identity"
+        );
+
+        // Give the door its matching maze coordinates.
+        explorerDoor.Configure(edgeX, edgeY, isVertical);
+
+        // Preserve the configured ID when saving the prefab.
+        PrefabUtility.RecordPrefabInstancePropertyModifications(
+            explorerDoor
+        );
     }
+
 
     private static GameObject SpawnPrefab(GameObject prefab, Transform parent,
                                          string name, Vector3 position,

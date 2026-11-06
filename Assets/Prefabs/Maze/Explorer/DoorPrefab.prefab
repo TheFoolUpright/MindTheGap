@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1604586653690377279}
   - component: {fileID: 3506506679030434285}
   - component: {fileID: 9208906789540793667}
+  - component: {fileID: 9006633343455910702}
   m_Layer: 0
   m_Name: DoorPrefab
   m_TagString: Untagged
@@ -129,3 +130,25 @@ NavMeshObstacle:
   m_CarveOnlyStationary: 1
   m_Center: {x: 0, y: 0, z: 0}
   m_TimeToStationary: 0.5
+--- !u!114 &9006633343455910702
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 15660609208307598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fe5da0dd7e967a4e841139a4de94d63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ExplorerDoor
+  edgeX: 0
+  edgeY: 0
+  isVertical: 0
+  doorRenderer: {fileID: 1604586653690377279}
+  closedMaterial: {fileID: 2100000, guid: e8ab680fd29398345b7d74b1ce01fd86, type: 2}
+  openMaterial: {fileID: 2100000, guid: fb418eb2078a6074390b26deefa755ba, type: 2}
+  blockingColliders:
+  - {fileID: 3506506679030434285}
+  navMeshObstacle: {fileID: 9208906789540793667}
+  currentState: 0
