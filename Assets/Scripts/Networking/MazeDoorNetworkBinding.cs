@@ -67,6 +67,8 @@ public class MazeDoorNetworkBinding : MonoBehaviour
                 Debug.LogWarning(
                     $"Duplicate Explorer door ID: {door.DoorId}", this);
         }
+
+     
     }
 
     private IEnumerator ConnectWhenReady()

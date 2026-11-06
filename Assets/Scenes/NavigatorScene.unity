@@ -12477,6 +12477,7 @@ GameObject:
   - component: {fileID: 1072929510}
   - component: {fileID: 1072929509}
   - component: {fileID: 1072929511}
+  - component: {fileID: 1072929512}
   m_Layer: 0
   m_Name: NavigatorMapSystem
   m_TagString: Untagged
@@ -12617,6 +12618,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NavigatorDoorCodeHandler
   codeEntry: {fileID: 1072929510}
   generatedMapRoot: {fileID: 1254977764}
+--- !u!114 &1072929512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072929502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb3614474f90d2146a493395dcfe90bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MazeDoorNetworkBinding
+  generatedRoot: {fileID: 1254977764}
 --- !u!224 &1078720753 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8390807148070487057, guid: bb6a1ae37d9b8cd4b9cb6d8174a9effd, type: 3}
