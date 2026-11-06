@@ -852,6 +852,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 324328124010069482, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
+      propertyPath: m_StartingSelectedInteractable
+      value: 
+      objectReference: {fileID: 653842543}
     - target: {fileID: 531687932730139143, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_StartingSelectedInteractable
       value: 
@@ -940,6 +944,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -23
       objectReference: {fileID: 0}
+    - target: {fileID: 1174042232931793813, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
+      propertyPath: m_StartingSelectedInteractable
+      value: 
+      objectReference: {fileID: 133974289}
     - target: {fileID: 1417464957926155384, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_StartingSelectedInteractable
       value: 
@@ -1252,6 +1260,10 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -23
       objectReference: {fileID: 0}
+    - target: {fileID: 7918004486765961736, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
+      propertyPath: m_StartingSelectedInteractable
+      value: 
+      objectReference: {fileID: 1173237510}
     - target: {fileID: 7927099295849151973, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_StartingSelectedInteractable
       value: 
@@ -9102,6 +9114,10 @@ PrefabInstance:
       propertyPath: previewCutter
       value: 
       objectReference: {fileID: 133974288}
+    - target: {fileID: 4115639816066703038, guid: cefadbb9dc52bc54b990a60e31f54876, type: 3}
+      propertyPath: 'm_Colliders.Array.data[0]'
+      value: 
+      objectReference: {fileID: 883118168}
     - target: {fileID: 5981606692279890222, guid: cefadbb9dc52bc54b990a60e31f54876, type: 3}
       propertyPath: m_LocalPosition.x
       value: 17.044813
@@ -11479,6 +11495,11 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 1867590735236172124, guid: 1a00ebae5139bfa41a75b6dc7e4d4173, type: 3}
   m_PrefabInstance: {fileID: 879599966}
+  m_PrefabAsset: {fileID: 0}
+--- !u!65 &883118168 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 8290519613387382634, guid: cefadbb9dc52bc54b990a60e31f54876, type: 3}
+  m_PrefabInstance: {fileID: 674991220}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &890242747
 PrefabInstance:
