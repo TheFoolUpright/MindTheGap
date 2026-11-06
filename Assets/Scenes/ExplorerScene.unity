@@ -3280,6 +3280,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1958970771}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &133974288 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4189861720583654351, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
+  m_PrefabInstance: {fileID: 605351412}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 389eb2feb78bbc24a89239a4f2e5f8c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CutterTool
 --- !u!114 &133974289 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 3370089680637288865, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
@@ -14308,10 +14319,22 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 109141641297490074, guid: cefadbb9dc52bc54b990a60e31f54876, type: 3}
+      propertyPath: cutter
+      value: 
+      objectReference: {fileID: 133974288}
     - target: {fileID: 1503885613761112955, guid: cefadbb9dc52bc54b990a60e31f54876, type: 3}
       propertyPath: m_Name
       value: Crate
       objectReference: {fileID: 0}
+    - target: {fileID: 2435597622505006619, guid: cefadbb9dc52bc54b990a60e31f54876, type: 3}
+      propertyPath: cutter
+      value: 
+      objectReference: {fileID: 133974288}
+    - target: {fileID: 2794195527157533804, guid: cefadbb9dc52bc54b990a60e31f54876, type: 3}
+      propertyPath: previewCutter
+      value: 
+      objectReference: {fileID: 133974288}
     - target: {fileID: 5981606692279890222, guid: cefadbb9dc52bc54b990a60e31f54876, type: 3}
       propertyPath: m_LocalPosition.x
       value: 17.044813
@@ -24795,6 +24818,18 @@ PrefabInstance:
     - target: {fileID: 3174152353200825943, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
       propertyPath: m_Name
       value: Cube (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3174152353200825943, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4745586553312559201, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
+      propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6586712261172555788, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
+      propertyPath: m_Layer
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9113011546711674679, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
       propertyPath: m_LocalPosition.x
