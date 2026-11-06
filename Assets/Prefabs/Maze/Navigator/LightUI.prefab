@@ -131,7 +131,7 @@ MonoBehaviour:
   onColor: {r: 1, g: 0.8, b: 0.2, a: 1}
   offColor: {r: 0.4, g: 0.45, b: 0.5, a: 1}
   brokenColor: {r: 0.65, g: 0.15, b: 0.15, a: 1}
-  currentState: 0
+  currentState: 1
 --- !u!1 &8141208711789268265
 GameObject:
   m_ObjectHideFlags: 0
