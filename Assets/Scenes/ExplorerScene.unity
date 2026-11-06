@@ -1346,6 +1346,10 @@ PrefabInstance:
       propertyPath: m_CastRadius
       value: 0.1
       objectReference: {fileID: 0}
+    - target: {fileID: 3796692410269933979, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
+      propertyPath: m_PhysicsLayerMask.m_Bits
+      value: 65
+      objectReference: {fileID: 0}
     - target: {fileID: 4750419573833148750, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
@@ -1472,7 +1476,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6169946987591155460, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_PhysicsLayerMask.m_Bits
-      value: 1
+      value: 65
       objectReference: {fileID: 0}
     - target: {fileID: 7917674758246323947, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1532,7 +1536,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9059786329452581396, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_CameraYOffset
-      value: 0.1
+      value: 1.3859
       objectReference: {fileID: 0}
     - target: {fileID: 9059786329452581396, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_RequestedTrackingOriginMode
@@ -20061,10 +20065,6 @@ PrefabInstance:
       propertyPath: m_Name
       value: Pyramid
       objectReference: {fileID: 0}
-    - target: {fileID: 1349009924313764836, guid: 960d69f6ca9ed484c9f7f34b7a356757, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 5057328760183097249, guid: 960d69f6ca9ed484c9f7f34b7a356757, type: 3}
       propertyPath: m_LocalPosition.x
       value: 17.472116
@@ -20103,14 +20103,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5057328760183097249, guid: 960d69f6ca9ed484c9f7f34b7a356757, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7736534261627862903, guid: 960d69f6ca9ed484c9f7f34b7a356757, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7882762123191407591, guid: 960d69f6ca9ed484c9f7f34b7a356757, type: 3}
-      propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -20625,18 +20617,6 @@ PrefabInstance:
     - target: {fileID: 3174152353200825943, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
       propertyPath: m_Name
       value: Cube
-      objectReference: {fileID: 0}
-    - target: {fileID: 3174152353200825943, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4745586553312559201, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6586712261172555788, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
-      propertyPath: m_Layer
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9113011546711674679, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
       propertyPath: m_LocalPosition.x
@@ -24859,18 +24839,6 @@ PrefabInstance:
     - target: {fileID: 3174152353200825943, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
       propertyPath: m_Name
       value: Cube (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 3174152353200825943, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4745586553312559201, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
-      propertyPath: m_Layer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6586712261172555788, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
-      propertyPath: m_Layer
-      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9113011546711674679, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
       propertyPath: m_LocalPosition.x
