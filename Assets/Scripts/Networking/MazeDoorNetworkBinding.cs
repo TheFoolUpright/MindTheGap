@@ -68,12 +68,7 @@ public class MazeDoorNetworkBinding : MonoBehaviour
                     $"Duplicate Explorer door ID: {door.DoorId}", this);
         }
 
-        Debug.Log(
-            $"[Door Binding] {gameObject.name}: " +
-            $"{navigatorDoors.Count} Navigator doors, " +
-            $"{explorerDoors.Count} Explorer doors found.",
-            this
-        );
+     
     }
 
     private IEnumerator ConnectWhenReady()
@@ -101,44 +96,22 @@ public class MazeDoorNetworkBinding : MonoBehaviour
         mazeNetworkState.ApplyCurrentDoorStates(ApplyDoorState);
     }
 
-
     private void ApplyDoorState(string doorId, MazeDoorState state)
     {
-        bool found = false;
-
+        // Update the Navigator's map representation.
         if (navigatorDoors.TryGetValue(
             doorId, out NavigatorDoorNode navigatorDoor))
         {
             navigatorDoor.SetState(state);
-            found = true;
-
-            Debug.Log(
-                $"[Door Binding] Navigator {doorId} -> {state}",
-                this
-            );
         }
 
+        // Update the Explorer's physical representation.
         if (explorerDoors.TryGetValue(
             doorId, out ExplorerDoor explorerDoor))
         {
             explorerDoor.SetState(state);
-            found = true;
-
-            Debug.Log(
-                $"[Door Binding] Explorer {doorId} -> {state}",
-                this
-            );
-        }
-
-        if (!found)
-        {
-            Debug.LogWarning(
-                $"[Door Binding] Could not find door {doorId}!",
-                this
-            );
         }
     }
-
 
     // Useful when replacing the generated maze during a refresh.
     public void RefreshDoorReferences()
