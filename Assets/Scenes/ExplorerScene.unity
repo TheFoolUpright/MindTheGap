@@ -1282,7 +1282,7 @@ PrefabInstance:
       objectReference: {fileID: 1173237510}
     - target: {fileID: 8806329115733545877, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_Name
-      value: XR Origin Hands (XR Rig)
+      value: Explorer VR (XR Rig)
       objectReference: {fileID: 0}
     - target: {fileID: 8806329115733545878, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_LocalPosition.x
@@ -9124,7 +9124,7 @@ PrefabInstance:
       objectReference: {fileID: 133974288}
     - target: {fileID: 1503885613761112955, guid: cefadbb9dc52bc54b990a60e31f54876, type: 3}
       propertyPath: m_Name
-      value: Crate
+      value: CrateType01
       objectReference: {fileID: 0}
     - target: {fileID: 2435597622505006619, guid: cefadbb9dc52bc54b990a60e31f54876, type: 3}
       propertyPath: cutter
@@ -9134,10 +9134,6 @@ PrefabInstance:
       propertyPath: previewCutter
       value: 
       objectReference: {fileID: 133974288}
-    - target: {fileID: 4115639816066703038, guid: cefadbb9dc52bc54b990a60e31f54876, type: 3}
-      propertyPath: 'm_Colliders.Array.data[0]'
-      value: 
-      objectReference: {fileID: 883118168}
     - target: {fileID: 5981606692279890222, guid: cefadbb9dc52bc54b990a60e31f54876, type: 3}
       propertyPath: m_LocalPosition.x
       value: 17.044813
@@ -11515,11 +11511,6 @@ PrefabInstance:
 Transform:
   m_CorrespondingSourceObject: {fileID: 1867590735236172124, guid: 1a00ebae5139bfa41a75b6dc7e4d4173, type: 3}
   m_PrefabInstance: {fileID: 879599966}
-  m_PrefabAsset: {fileID: 0}
---- !u!65 &883118168 stripped
-BoxCollider:
-  m_CorrespondingSourceObject: {fileID: 8290519613387382634, guid: cefadbb9dc52bc54b990a60e31f54876, type: 3}
-  m_PrefabInstance: {fileID: 674991220}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &890242747
 PrefabInstance:
