@@ -17,6 +17,7 @@ public class NavigatorMapBuilder : MonoBehaviour
     [SerializeField, Min(1f)] private float wallThickness = 4f;
 
     public MazeLayoutData Layout => layout;
+    public float UnitsPerCell => unitsPerCell;
 
     public Transform GeneratedRoot =>
         mapContent != null

@@ -326,6 +326,7 @@ GameObject:
   - component: {fileID: 3660908446315557739}
   - component: {fileID: 7381960825189322624}
   - component: {fileID: 4054939522777586096}
+  - component: {fileID: 8092574552176937892}
   m_Layer: 0
   m_Name: ExplorerMaze
   m_TagString: Untagged
@@ -383,6 +384,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MazeDoorNetworkBinding
   generatedRoot: {fileID: 3660908446315557739}
+--- !u!114 &8092574552176937892
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5546318600456063935}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3ae2927016388b4d980539bf06e40f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ExplorerPositionPublisher
+  explorerHead: {fileID: 0}
+  generatedMazeRoot: {fileID: 3660908446315557739}
+  publishInterval: 0.1
+  minimumMovement: 0.05
 --- !u!1 &6199825001346082810
 GameObject:
   m_ObjectHideFlags: 0

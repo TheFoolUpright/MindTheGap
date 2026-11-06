@@ -2,14 +2,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-// The three possible states of a maze light.
-public enum MazeLightState
-{
-    On,
-    Off,
-    Broken
-}
-
 public class NavigatorLightNode : MonoBehaviour
 {
     [Header("Light Identity")]

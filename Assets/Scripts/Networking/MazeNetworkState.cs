@@ -50,6 +50,32 @@ public class MazeNetworkState : NetworkBehaviour
     // Other components can subscribe to state changes.
     public event Action<string, MazeDoorState> DoorStateChanged;
 
+
+    [Header("Explorer Tracking")]
+    private readonly NetworkVariable<Vector2> explorerMazePosition =
+        new NetworkVariable<Vector2>(
+            Vector2.zero,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
+
+    public Vector2 ExplorerMazePosition => explorerMazePosition.Value;
+
+    private readonly NetworkVariable<bool> explorerPositionAvailable =
+        new NetworkVariable<bool>(
+            false,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
+
+    public bool HasExplorerPosition => explorerPositionAvailable.Value;
+
+
+
+
+    public event Action<Vector2> ExplorerPositionChanged;
+
+
     private void Awake()
     {
         doors = new NetworkList<NetworkDoorState>();
@@ -57,6 +83,9 @@ public class MazeNetworkState : NetworkBehaviour
 
     public override void OnNetworkSpawn()
     {
+        explorerMazePosition.OnValueChanged += OnExplorerPositionChanged;
+        explorerPositionAvailable.OnValueChanged += OnExplorerPositionAvailabilityChanged;
+
         doors.OnListChanged += OnDoorListChanged;
 
         if (IsServer)
@@ -71,6 +100,9 @@ public class MazeNetworkState : NetworkBehaviour
 
     public override void OnNetworkDespawn()
     {
+        explorerMazePosition.OnValueChanged -= OnExplorerPositionChanged;
+        explorerPositionAvailable.OnValueChanged -= OnExplorerPositionAvailabilityChanged;
+
         doors.OnListChanged -= OnDoorListChanged;
         closeTimes.Clear();
     }
@@ -291,5 +323,39 @@ public class MazeNetworkState : NetworkBehaviour
         }
 
         RequestToggleDoor(doors[0].DoorId.ToString());
+    }
+
+    public void PublishExplorerPosition(Vector2 position)
+    {
+        if (!IsSpawned || !IsServer)
+            return;
+
+        explorerMazePosition.Value = position;
+        explorerPositionAvailable.Value = true;
+    }
+
+    private void OnExplorerPositionChanged(
+    Vector2 previous,
+    Vector2 current)
+    {
+        ExplorerPositionChanged?.Invoke(current);
+    }
+
+    private void OnExplorerPositionAvailabilityChanged(
+    bool previous,
+    bool current)
+    {
+        ExplorerPositionChanged?.Invoke(ExplorerMazePosition);
+    }
+
+    [ContextMenu("Debug/Print Explorer Position")]
+    private void DebugPrintExplorerPosition()
+    {
+        Debug.Log(
+            $"[Explorer Tracking] " +
+            $"Server: {IsServer}, " +
+            $"Position: {ExplorerMazePosition}",
+            this
+        );
     }
 }

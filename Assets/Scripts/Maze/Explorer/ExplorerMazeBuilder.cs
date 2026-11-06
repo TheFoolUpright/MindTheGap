@@ -115,13 +115,51 @@ public class ExplorerMazeBuilder : MonoBehaviour
             }
         }
 
+
         foreach (MazeLightData light in layout.Lights)
         {
-            Vector3 position = layout.GetCellCenterLocal(light.cell.x, light.cell.y);
+            Vector3 position = layout.GetCellCenterLocal(
+                light.cell.x,
+                light.cell.y
+            );
+
             position.y = wallHeight - lightOffsetFromCeiling;
-            SpawnPrefab(lightPrefab, lights, $"Light_{light.id}_Code_{light.controlCode}",
-                position, Quaternion.identity, Vector3.one, false);
+
+            GameObject instance = SpawnPrefab(
+                lightPrefab,
+                lights,
+                $"Light_{light.id}",
+                position,
+                Quaternion.identity,
+                Vector3.one,
+                false
+            );
+
+            ExplorerLight explorerLight =
+                instance.GetComponent<ExplorerLight>();
+
+            if (explorerLight == null)
+            {
+                Debug.LogError(
+                    $"Light prefab is missing ExplorerLight: Light_{light.id}",
+                    instance
+                );
+                continue;
+            }
+
+            Undo.RecordObject(
+                explorerLight,
+                "Configure Explorer Light Identity"
+            );
+
+            explorerLight.Configure(light.id);
+
+            // Preserve the ID when saving the generated prefab.
+            PrefabUtility.RecordPrefabInstancePropertyModifications(
+                explorerLight
+            );
         }
+
 
         // A single NavMeshSurface gathers the completed floor/wall geometry.
         // Do not bake here; use the NavMeshSurface Inspector after saving the maze.
