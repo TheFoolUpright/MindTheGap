@@ -1252,7 +1252,7 @@ PrefabInstance:
       objectReference: {fileID: 133974289}
     - target: {fileID: 1644703820982035308, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_EnableFarCasting
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2243020122175513880, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1338,9 +1338,13 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2763817294847212894, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
+      propertyPath: m_CastDistance
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3796692410269933979, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_CastRadius
-      value: 0.01
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: 4750419573833148750, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1454,13 +1458,21 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -23
       objectReference: {fileID: 0}
+    - target: {fileID: 5137354377943704513, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
+      propertyPath: m_CastDistance
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 5518899284880179293, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_DefaultParameters.m_ApertureSize
       value: 0.798
       objectReference: {fileID: 0}
     - target: {fileID: 6169946987591155460, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_CastRadius
-      value: 0.01
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6169946987591155460, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
+      propertyPath: m_PhysicsLayerMask.m_Bits
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7917674758246323947, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1472,7 +1484,7 @@ PrefabInstance:
       objectReference: {fileID: 1173237510}
     - target: {fileID: 8629926924687228403, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_EnableFarCasting
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8806329115733545877, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_Name
@@ -12819,6 +12831,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Cutter
       objectReference: {fileID: 0}
+    - target: {fileID: 3370089680637288865, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
+      propertyPath: m_Colliders.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3370089680637288865, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
+      propertyPath: 'm_Colliders.Array.data[1]'
+      value: 
+      objectReference: {fileID: 837157165}
     - target: {fileID: 5875236172584209850, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
       propertyPath: m_LocalPosition.x
       value: 16.492758
@@ -17836,6 +17856,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3a634a46835f26540bbe4d11507bc773, type: 3}
+--- !u!65 &837157165 stripped
+BoxCollider:
+  m_CorrespondingSourceObject: {fileID: 6791729478042425630, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
+  m_PrefabInstance: {fileID: 605351412}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &838830741
 PrefabInstance:
   m_ObjectHideFlags: 0
