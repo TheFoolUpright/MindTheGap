@@ -4,8 +4,10 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 
 [DisallowMultipleComponent]
-public sealed class MazeRefresh : MonoBehaviour
+public class MazeRefresh : MonoBehaviour
 {
+    // For enemies to know when the layout has changed so they can update their pathfinding.
+    public event System.Action<GameObject, Transform> LayoutChanged;
     [SerializeField] private GameObject[] layoutPrefabs = new GameObject[0];
     [SerializeField] private float refreshInterval = 60f;
     [SerializeField] private float secondsRemaining;
@@ -88,6 +90,8 @@ public sealed class MazeRefresh : MonoBehaviour
 
         // Both manual and timed refreshes start a fresh countdown.
         nextRefreshTime = Time.time + Mathf.Max(1f, refreshInterval);
+        // Notify enemies that the layout has changed
+        LayoutChanged?.Invoke(prefab, activeLayout.transform);
     }
 
     private void ShuffleFrom(int firstIndex)

@@ -23767,7 +23767,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1db58e2cc33d1f408f51009cdf459bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MazeLayoutPreview
-  layout: {fileID: 11400000, guid: 37659acfe353e254bb799b2bbd6a1447, type: 2}
+  layout: {fileID: 11400000, guid: b74a7a7411d50844f8b40f1184fee810, type: 2}
 --- !u!4 &1873228656
 Transform:
   m_ObjectHideFlags: 0
@@ -25211,6 +25211,59 @@ Transform:
   - {fileID: 677320855}
   - {fileID: 127450079}
   - {fileID: 117894895}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1978443333
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1978443335}
+  - component: {fileID: 1978443334}
+  m_Layer: 0
+  m_Name: EnemySpawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1978443334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1978443333}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b2cc4080a9209045bcf519fcced121c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawn
+  mazeRefresh: {fileID: 145124751}
+  enemyPrefab: {fileID: 7988466343413025167, guid: c036c27a239802b47b85d266ebc7f2d3, type: 3}
+  spawnPointPrefab: {fileID: 3174525807440125560, guid: 8a3a6899c9ef4c618c00d6bf7247fd01, type: 3}
+  layouts:
+  - layoutPrefab: {fileID: 5741957391712463028, guid: 1484fe3df5326c3498ea2b4fe60b5efd, type: 3}
+    layoutData: {fileID: 11400000, guid: 37659acfe353e254bb799b2bbd6a1447, type: 2}
+  - layoutPrefab: {fileID: 4458685542397854133, guid: 82ca9516b759fb44397fcb1c2d1c100a, type: 3}
+    layoutData: {fileID: 11400000, guid: b74a7a7411d50844f8b40f1184fee810, type: 2}
+  firstSpawnDelay: 5
+--- !u!4 &1978443335
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1978443333}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: -0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1995607415
@@ -26790,3 +26843,4 @@ SceneRoots:
   - {fileID: 1005871918}
   - {fileID: 1456193573384328481}
   - {fileID: 145124750}
+  - {fileID: 1978443335}
