@@ -1252,7 +1252,7 @@ PrefabInstance:
       objectReference: {fileID: 133974289}
     - target: {fileID: 1644703820982035308, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_EnableFarCasting
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 2243020122175513880, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_SizeDelta.x
@@ -1340,11 +1340,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2763817294847212894, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_CastDistance
-      value: 2
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 3796692410269933979, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_CastRadius
-      value: 0.4
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 4750419573833148750, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_AnchorMax.y
@@ -1460,7 +1460,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5137354377943704513, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_CastDistance
-      value: 2
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 5518899284880179293, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_DefaultParameters.m_ApertureSize
@@ -1468,7 +1468,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6169946987591155460, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_CastRadius
-      value: 0.4
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 6169946987591155460, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_PhysicsLayerMask.m_Bits
@@ -1484,7 +1484,7 @@ PrefabInstance:
       objectReference: {fileID: 1173237510}
     - target: {fileID: 8629926924687228403, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_EnableFarCasting
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8806329115733545877, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
       propertyPath: m_Name
