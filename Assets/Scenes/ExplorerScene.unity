@@ -4506,6 +4506,67 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 267528038}
   m_Mesh: {fileID: 4300000, guid: b9927772e73230f45b4834b7db6101de, type: 3}
+--- !u!1001 &283528137
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1503885613761112955, guid: fdd8933dfafaa3b45adb78214c1fb596, type: 3}
+      propertyPath: m_Name
+      value: CrateType02
+      objectReference: {fileID: 0}
+    - target: {fileID: 2173850272564322645, guid: fdd8933dfafaa3b45adb78214c1fb596, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5981606692279890222, guid: fdd8933dfafaa3b45adb78214c1fb596, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 17.809252
+      objectReference: {fileID: 0}
+    - target: {fileID: 5981606692279890222, guid: fdd8933dfafaa3b45adb78214c1fb596, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.03000013
+      objectReference: {fileID: 0}
+    - target: {fileID: 5981606692279890222, guid: fdd8933dfafaa3b45adb78214c1fb596, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 17.519056
+      objectReference: {fileID: 0}
+    - target: {fileID: 5981606692279890222, guid: fdd8933dfafaa3b45adb78214c1fb596, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5981606692279890222, guid: fdd8933dfafaa3b45adb78214c1fb596, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5981606692279890222, guid: fdd8933dfafaa3b45adb78214c1fb596, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5981606692279890222, guid: fdd8933dfafaa3b45adb78214c1fb596, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5981606692279890222, guid: fdd8933dfafaa3b45adb78214c1fb596, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5981606692279890222, guid: fdd8933dfafaa3b45adb78214c1fb596, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5981606692279890222, guid: fdd8933dfafaa3b45adb78214c1fb596, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: fdd8933dfafaa3b45adb78214c1fb596, type: 3}
 --- !u!1001 &285058057
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -9125,6 +9186,10 @@ PrefabInstance:
     - target: {fileID: 1503885613761112955, guid: cefadbb9dc52bc54b990a60e31f54876, type: 3}
       propertyPath: m_Name
       value: CrateType01
+      objectReference: {fileID: 0}
+    - target: {fileID: 2173850272564322645, guid: cefadbb9dc52bc54b990a60e31f54876, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 2435597622505006619, guid: cefadbb9dc52bc54b990a60e31f54876, type: 3}
       propertyPath: cutter
@@ -25815,3 +25880,4 @@ SceneRoots:
   - {fileID: 674991220}
   - {fileID: 1090501910}
   - {fileID: 605351412}
+  - {fileID: 283528137}
