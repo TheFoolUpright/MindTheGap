@@ -1,5 +1,6 @@
 
 using System.Collections.Generic;
+using System.Text;
 using TMPro;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -7,6 +8,25 @@ using UnityEngine.UI;
 
 public class NavigatorMapHover : MonoBehaviour
 {
+    // Text sizes for each part of the panel.
+    private const int TitleSize = 34;
+    private const int StatusSize = 24;
+    private const int SectionSize = 22;
+    private const int LabelSize = 18;
+    private const int ValueSize = 34;
+    private const int MessageSize = 22;
+    private const int SpacerSize = 14;
+
+    // Column positions, as a percentage of the text area's width.
+    private const string SwitchesColumn = "<pos=20%>";
+    private const string DirectionsColumn = "<pos=58%>";
+    private const string StatusColumn = "<pos=76%>";
+
+    // The divider is drawn with characters. It should span the text area:
+    // DividerLength x DividerCharacterWidth = width of the text area.
+    private const int DividerLength = 56;
+    private const int DividerCharacterWidth = 8;
+
     [Header("Map References")]
     [SerializeField] private Canvas mapCanvas;
     [SerializeField] private GraphicRaycaster graphicRaycaster;
@@ -16,12 +36,26 @@ public class NavigatorMapHover : MonoBehaviour
     [SerializeField] private TMP_Text codesText;
     [SerializeField] private NavigatorControlCodeManager codeManager;
 
+    [Header("Text Colors")]
+    [SerializeField] private Color titleColor = new Color32(0xFF, 0xFF, 0xFF, 0xFF);
+    [SerializeField] private Color sectionColor = new Color32(0x7F, 0xC8, 0xE8, 0xFF);
+    [SerializeField] private Color valueColor = new Color32(0xFF, 0xFF, 0xFF, 0xFF);
+    [SerializeField] private Color mutedColor = new Color32(0x9A, 0xA5, 0xB1, 0xFF);
+    [SerializeField] private Color dividerColor = new Color32(0x3A, 0x42, 0x4C, 0xFF);
+
+    [Header("Light State Colors")]
+    [SerializeField] private Color lightOnColor = new Color32(0x8F, 0xDC, 0x8F, 0xFF);
+    [SerializeField] private Color lightOffColor = new Color32(0x9A, 0xA5, 0xB1, 0xFF);
+    [SerializeField] private Color lightBrokenColor = new Color32(0xFF, 0x8A, 0x80, 0xFF);
+
     private PointerEventData pointerData;
     private readonly List<RaycastResult> results = new();
 
     private NavigatorDoorNode currentDoor;
+    private MazeDoorState displayedDoorState;
     private NavigatorLightNode currentLight;
     private MazeLightState displayedLightState;
+    private bool refreshRequested;
 
     private void Start()
     {
@@ -52,7 +86,7 @@ public class NavigatorMapHover : MonoBehaviour
 
         pointerData = new PointerEventData(EventSystem.current);
 
-        codesText.text = "Hover over a map node";
+        ShowCenteredMessage("CONTROL CODES", "Hover over a map node");
     }
 
 
@@ -103,14 +137,23 @@ public class NavigatorMapHover : MonoBehaviour
             hoveredLight != null &&
             hoveredLight.CurrentState != displayedLightState;
 
-        if (!hoverChanged && !lightStateChanged)
+        // Has the currently hovered door changed state?
+        bool doorStateChanged =
+            hoveredDoor != null &&
+            hoveredDoor.CurrentState != displayedDoorState;
+
+        if (!hoverChanged && !lightStateChanged && !doorStateChanged && !refreshRequested)
             return;
 
+        refreshRequested = false;
         currentDoor = hoveredDoor;
         currentLight = hoveredLight;
 
         if (currentLight != null)
             displayedLightState = currentLight.CurrentState;
+
+        if (currentDoor != null)
+            displayedDoorState = currentDoor.CurrentState;
 
         UpdateCodesDisplay();
     }
@@ -122,7 +165,7 @@ public class NavigatorMapHover : MonoBehaviour
     {
         if (codeManager == null)
         {
-            codesText.text = "Code Manager not assigned";
+            ShowCenteredMessage("CONTROL CODES", "Code Manager not assigned");
             return;
         }
 
@@ -130,24 +173,26 @@ public class NavigatorMapHover : MonoBehaviour
         if (currentLight != null)
         {
             int lightId = currentLight.LightId;
+            string header = FormatHeader(
+                $"LIGHT {lightId}",
+                FormatLightState(currentLight.CurrentState)
+            );
 
             if (codeManager.TryGetLightCodes(
                 lightId,
                 out ControlCode toggleCode,
                 out ControlCode overloadCode))
             {
-                codesText.text =
-                    $"LIGHT {lightId}\n" +
-                    $"State: {currentLight.CurrentState}\n\n" +
-                    $"TOGGLE CODE\n" +
-                    $"{FormatCode(toggleCode)}\n\n" +
-                    $"OVERLOAD CODE\n" +
-                    $"{FormatCode(overloadCode)}";
+                ShowDetails(
+                    header +
+                    FormatCodeSection("TOGGLE CODE", toggleCode) +
+                    FormatSpacer() +
+                    FormatCodeSection("OVERLOAD CODE", overloadCode)
+                );
             }
             else
             {
-                codesText.text =
-                    $"LIGHT {lightId}\nCodes not assigned";
+                ShowDetails(header + FormatMissingCodes("Codes not assigned"));
             }
 
             return;
@@ -157,53 +202,137 @@ public class NavigatorMapHover : MonoBehaviour
         if (currentDoor != null)
         {
             string doorId = currentDoor.DoorId;
+            string header = FormatHeader(
+                $"DOOR {doorId}",
+                FormatDoorState(currentDoor.CurrentState)
+            );
 
             if (codeManager.TryGetDoorCode(
                 doorId,
                 out ControlCode doorCode))
             {
-                codesText.text =
-                    $"DOOR {doorId}\n\n" +
-                    $"CONTROL CODE\n" +
-                    $"{FormatCode(doorCode)}";
+                ShowDetails(header + FormatCodeSection("CONTROL CODE", doorCode));
             }
             else
             {
-                codesText.text =
-                    $"DOOR {doorId}\nCode not assigned";
+                ShowDetails(header + FormatMissingCodes("Code not assigned"));
             }
 
             return;
         }
 
         // Nothing is currently being hovered.
-        codesText.text = "Hover over a map node";
+        ShowCenteredMessage("CONTROL CODES", "Hover over a map node");
     }
 
 
 
-    private string FormatCode(ControlCode code)
+    private void ShowDetails(string text)
     {
-        string binary = System.Convert
+        codesText.verticalAlignment = VerticalAlignmentOptions.Top;
+        codesText.text = text;
+    }
+
+    private void ShowCenteredMessage(string title, string message)
+    {
+        codesText.verticalAlignment = VerticalAlignmentOptions.Middle;
+        codesText.text =
+            "<align=center>" +
+            $"<size={TitleSize}><color={ToHex(titleColor)}><b>{title}</b></color></size>\n" +
+            $"<size={MessageSize}><color={ToHex(mutedColor)}>{message}</color></size>" +
+            "</align>";
+    }
+
+    private string FormatHeader(string title, string status = "")
+    {
+        string divider = new string('─', DividerLength);
+
+        return $"<size={TitleSize}><color={ToHex(titleColor)}><b>{title}</b></color></size>" +
+               $"{status}\n" +
+               $"<size={LabelSize}><nobr><mspace={DividerCharacterWidth}>" +
+               $"<color={ToHex(dividerColor)}>{divider}</color>" +
+               "</mspace></nobr></size>\n";
+    }
+
+    private string FormatLightState(MazeLightState state)
+    {
+        Color color = state switch
+        {
+            MazeLightState.On => lightOnColor,
+            MazeLightState.Broken => lightBrokenColor,
+            _ => lightOffColor
+        };
+
+        return $"{StatusColumn}<size={StatusSize}><color={ToHex(color)}>" +
+               $"{state.ToString().ToUpperInvariant()}</color></size>";
+    }
+    private string FormatDoorState(MazeDoorState state)
+    {
+        Color color = state == MazeDoorState.Open
+            ? lightOnColor
+            : mutedColor;
+
+        return $"{StatusColumn}<size={StatusSize}>" +
+               $"<color={ToHex(color)}>" +
+               $"{state.ToString().ToUpperInvariant()}" +
+               "</color></size>";
+    }
+
+    private string FormatCodeSection(string title, ControlCode code)
+    {
+        string switches = System.Convert
             .ToString(code.ToggleMask, 2)
             .PadLeft(4, '0');
 
-        string[] directions = new string[ControlCode.DirectionCount];
+        return $"<size={SectionSize}><color={ToHex(sectionColor)}><b>{title}</b></color></size>\n" +
+               $"<size={LabelSize}><color={ToHex(mutedColor)}>" +
+               $"Dial{SwitchesColumn}Switches{DirectionsColumn}Directions" +
+               "</color></size>\n" +
+               $"<size={ValueSize}><color={ToHex(valueColor)}>{code.Dial}" +
+               $"{SwitchesColumn}<mspace=0.65em>{switches}</mspace>" +
+               $"{DirectionsColumn}<mspace=0.85em>{FormatDirections(code)}</mspace>" +
+               "</color></size>\n";
+    }
+
+    private string FormatDirections(ControlCode code)
+    {
+        StringBuilder directions = new();
 
         for (int i = 0; i < ControlCode.DirectionCount; i++)
         {
-            directions[i] = code.GetDirection(i) switch
+            directions.Append(code.GetDirection(i) switch
             {
                 ControlDirection.Up => "↑",
                 ControlDirection.Right => "→",
                 ControlDirection.Down => "↓",
                 ControlDirection.Left => "←",
                 _ => "?"
-            };
+            });
         }
 
-        return $"Dial: {code.Dial} | Switches: {binary}\n" +
-               string.Join("  ", directions);
+        return directions.ToString();
+    }
+
+    private string FormatMissingCodes(string message)
+    {
+        return $"<size={MessageSize}><color={ToHex(mutedColor)}>{message}</color></size>";
+    }
+
+    private string FormatSpacer()
+    {
+        return $"<size={SpacerSize}> </size>\n";
+    }
+
+
+    private string ToHex(Color color)
+    {
+        return $"#{ColorUtility.ToHtmlStringRGBA(color)}";
+    }
+
+    // Lets Inspector color changes show up immediately during Play mode.
+    private void OnValidate()
+    {
+        refreshRequested = true;
     }
 
 

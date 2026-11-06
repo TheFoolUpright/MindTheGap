@@ -3,6 +3,13 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum CodeConfirmResult
+{
+    Accepted,
+    Invalid,
+    Incomplete
+}
+
 public class NavigatorCodeEntry : MonoBehaviour
 {
     [Header("Code Manager")]
@@ -24,6 +31,9 @@ public class NavigatorCodeEntry : MonoBehaviour
 
     // Later, networking can listen for successful actions.
     public event Action<ControlCodeMatch> ValidCodeEntered;
+
+    // The display uses this to flash a message after Enter is pressed.
+    public event Action<CodeConfirmResult> CodeConfirmed;
 
     private void Awake()
     {
@@ -128,6 +138,7 @@ public class NavigatorCodeEntry : MonoBehaviour
         Notify($"Removed last direction. {directions.Count}/6 entered.");
     }
 
+
     public void ConfirmCode()
     {
         if (codeManager == null)
@@ -136,40 +147,51 @@ public class NavigatorCodeEntry : MonoBehaviour
             return;
         }
 
+        CodeConfirmResult result;
+
         if (directions.Count != ControlCode.DirectionCount)
         {
             Notify("Enter all six directions before confirming.");
-            return;
-        }
-
-        ControlCode enteredCode = new ControlCode(
-            dial,
-            toggleMask,
-            directions
-        );
-
-        if (codeManager.TryResolveCode(
-            enteredCode,
-            out ControlCodeMatch match))
-        {
-            string target = match.Action == ControlCodeAction.ToggleDoor
-                ? $"Door {match.DoorId}"
-                : $"Light {match.LightId}";
-
-            Notify($"Correct code! {match.Action}: {target}");
-
-            ValidCodeEntered?.Invoke(match);
-
-            // Clear only the directional sequence.
-            directions.Clear();
-            InputChanged?.Invoke();
+            result = CodeConfirmResult.Incomplete;
         }
         else
         {
-            // Keep the inputs so the player can correct a mistake.
-            Notify("Invalid code. Use Backspace to correct it.");
+            ControlCode enteredCode = new ControlCode(
+                dial,
+                toggleMask,
+                directions
+            );
+
+            if (codeManager.TryResolveCode(
+                enteredCode,
+                out ControlCodeMatch match))
+            {
+                string target = match.Action == ControlCodeAction.ToggleDoor
+                    ? $"Door {match.DoorId}"
+                    : $"Light {match.LightId}";
+
+                Notify($"Correct code! {match.Action}: {target}");
+
+                ValidCodeEntered?.Invoke(match);
+
+                result = CodeConfirmResult.Accepted;
+            }
+            else
+            {
+                Notify("Invalid code.");
+                result = CodeConfirmResult.Invalid;
+            }
         }
+
+        // Every confirmation starts a fresh directional sequence.
+        directions.Clear();
+        InputChanged?.Invoke();
+
+        // Fire this last so the display's confirmation message
+        // is not immediately dismissed by InputChanged.
+        CodeConfirmed?.Invoke(result);
     }
+
 
     private void OnCodesRegenerated()
     {

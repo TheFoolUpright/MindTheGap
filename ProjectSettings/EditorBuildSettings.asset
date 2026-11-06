@@ -5,9 +5,6 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 0
-    path: Assets/Scenes/SampleScene.unity
-    guid: 55daccc09a3b69647bbab145b54a3ab3
   - enabled: 1
     path: Assets/Scenes/LobbyScene.unity
     guid: 61221954204e5db42a500b3c68ce4892
@@ -15,8 +12,8 @@ EditorBuildSettings:
     path: Assets/Scenes/GameSession.unity
     guid: 0bda42f1d366fc94494083098f43cf69
   - enabled: 1
-    path: Assets/Scenes/MaryScene.unity
-    guid: be011bacf3a548e488c58a9847cb135f
+    path: Assets/Scenes/ExplorerScene.unity
+    guid: e596a55927ae4e44ba09c8774af5f791
   - enabled: 1
     path: Assets/Scenes/NavigatorScene.unity
     guid: e7ae0a7a6f46ef441aa89eade2ac88c0
