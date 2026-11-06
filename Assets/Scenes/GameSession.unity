@@ -163,7 +163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebc1197ed0dc174479542f953b3cb007, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::GameSessionLoader
-  explorerScene: ExplorerScene
+  explorerScene: MaryScene
   navigatorScene: NavigatorScene
 --- !u!1 &1940012844
 GameObject:
