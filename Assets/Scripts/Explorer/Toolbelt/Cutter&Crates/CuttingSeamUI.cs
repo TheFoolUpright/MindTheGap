@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(CutPath))]
 [RequireComponent(typeof(CuttingProgress))]
@@ -142,6 +143,16 @@ public class CuttingSeamUI : MonoBehaviour
                     -uiWidth * 0.5f + fraction * uiWidth,
                     0f
                 );
+                Image markerImage = side.marker.GetComponent<Image>();
+
+                if (progress.CanHighlightMarker())
+                {
+                    markerImage.color = Color.cyan; // #00FFFF
+                }
+                else
+                {
+                    markerImage.color = Color.red; // #FF0000
+                }
             }
 
             sideStart = sideEnd;

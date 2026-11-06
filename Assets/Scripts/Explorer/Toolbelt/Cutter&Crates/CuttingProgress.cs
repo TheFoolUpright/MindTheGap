@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
+
 [RequireComponent(typeof(CutPath))]
 public class CuttingProgress : MonoBehaviour
 {
@@ -131,12 +132,7 @@ public class CuttingProgress : MonoBehaviour
 
         if (!tracking)
         {
-            // Resume near the end of the existing cut.
-            if (Mathf.Abs(offsetFromFrontier) > resumeTolerance)
-                return;
-
-            // Approach from the already-cut side to avoid skipping ahead.
-            if (direction != 0 && offsetFromFrontier * direction > 0f)
+            if (!CanResumeFrom(offsetFromFrontier))
                 return;
 
             previousDistance = distance;
@@ -144,11 +140,7 @@ public class CuttingProgress : MonoBehaviour
             return;
         }
 
-        float step = GetSignedDistance(
-            previousDistance,
-            distance,
-            length
-        );
+        float step = GetSignedDistance(previousDistance, distance, length);
 
         previousDistance = distance;
 
@@ -205,13 +197,38 @@ public class CuttingProgress : MonoBehaviour
         }
     }
 
+    public bool CanHighlightMarker()
+    {
+        if (!started || completed || cutter == null ||
+            !cutter.IsHeldByHand || cutter.CuttingTip == null)
+        {
+            return false;
+        }
+
+        if (!path.TryGetContact(cutter.CuttingTip.position, out _, out float distance))
+            return false;
+
+        float length = path.GetLength();
+        float frontier = startDistance + direction * cutLength;
+        float offset = GetSignedDistance(frontier, distance, length);
+
+        if (tracking)
+            return Mathf.Abs(offset) <= resumeTolerance;
+
+        return CanResumeFrom(offset);
+    }
+
+    private bool CanResumeFrom(float offset)
+    {
+        // Resume near the marker from the already-cut side.
+        return Mathf.Abs(offset) <= resumeTolerance &&
+               (direction == 0 || offset * direction <= 0f);
+    }
+
     // Returns the shortest signed distance around the closed perimeter.
     private float GetSignedDistance(float from, float to, float length)
     {
-        return Mathf.Repeat(
-            to - from + length * 0.5f,
-            length
-        ) - length * 0.5f;
+        return Mathf.Repeat(to - from + length * 0.5f, length) - length * 0.5f;
     }
 
     private void OnDrawGizmos()
