@@ -15,6 +15,12 @@ public class ExplorerPositionPublisher : MonoBehaviour
     [SerializeField, Min(0f)]
     private float minimumMovement = 0.05f;
 
+    [SerializeField, Min(0f)]
+    private float minimumTurnDegrees = 2f;
+
+    private float lastPublishedFacing;
+    private bool hasPublishedFacing;
+
     private MazeNetworkState mazeNetworkState;
 
     private float nextPublishTime;

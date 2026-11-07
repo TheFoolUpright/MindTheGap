@@ -68,12 +68,24 @@ public class MazeNetworkState : NetworkBehaviour
             NetworkVariableWritePermission.Server
         );
 
+    public event Action<Vector2> ExplorerPositionChanged;
     public bool HasExplorerPosition => explorerPositionAvailable.Value;
 
 
+    private readonly NetworkVariable<float> explorerFacingDegrees =
+        new NetworkVariable<float>(
+            0f,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
+
+    public float ExplorerFacingDegrees => explorerFacingDegrees.Value;
+
+    public event Action<float> ExplorerFacingChanged;
 
 
-    public event Action<Vector2> ExplorerPositionChanged;
+
+   
 
 
     private void Awake()
@@ -85,6 +97,7 @@ public class MazeNetworkState : NetworkBehaviour
     {
         explorerMazePosition.OnValueChanged += OnExplorerPositionChanged;
         explorerPositionAvailable.OnValueChanged += OnExplorerPositionAvailabilityChanged;
+        explorerFacingDegrees.OnValueChanged += OnExplorerFacingChanged;
 
         doors.OnListChanged += OnDoorListChanged;
 
@@ -102,6 +115,7 @@ public class MazeNetworkState : NetworkBehaviour
     {
         explorerMazePosition.OnValueChanged -= OnExplorerPositionChanged;
         explorerPositionAvailable.OnValueChanged -= OnExplorerPositionAvailabilityChanged;
+        explorerFacingDegrees.OnValueChanged -= OnExplorerFacingChanged;
 
         doors.OnListChanged -= OnDoorListChanged;
         closeTimes.Clear();
@@ -334,6 +348,14 @@ public class MazeNetworkState : NetworkBehaviour
         explorerPositionAvailable.Value = true;
     }
 
+    public void PublishExplorerFacing(float degrees)
+    {
+        if (!IsSpawned || !IsServer)
+            return;
+
+        explorerFacingDegrees.Value = degrees;
+    }
+
     private void OnExplorerPositionChanged(
     Vector2 previous,
     Vector2 current)
@@ -346,6 +368,11 @@ public class MazeNetworkState : NetworkBehaviour
     bool current)
     {
         ExplorerPositionChanged?.Invoke(ExplorerMazePosition);
+    }
+
+    private void OnExplorerFacingChanged(float previous, float current)
+    {
+        ExplorerFacingChanged?.Invoke(current);
     }
 
     [ContextMenu("Debug/Print Explorer Position")]

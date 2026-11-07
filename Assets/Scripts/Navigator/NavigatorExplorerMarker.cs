@@ -51,6 +51,13 @@ public class NavigatorExplorerMarker : MonoBehaviour
             mazeNetworkState.ExplorerMazePosition
         );
 
+        mazeNetworkState.ExplorerFacingChanged +=
+            OnExplorerFacingChanged;
+
+        OnExplorerFacingChanged(
+            mazeNetworkState.ExplorerFacingDegrees
+        );
+
         connectionCoroutine = null;
     }
 
@@ -142,4 +149,20 @@ public class NavigatorExplorerMarker : MonoBehaviour
 
         HideMarker();
     }
+
+    private void OnExplorerFacingChanged(float facingDegrees)
+    {
+        if (explorerMarker == null)
+            return;
+
+        // The marker arrow points upward by default.
+        // Unity UI needs a negative Z rotation for
+        // clockwise turning toward the right.
+        explorerMarker.localRotation = Quaternion.Euler(
+            0f,
+            0f,
+            -facingDegrees
+        );
+    }
+
 }
