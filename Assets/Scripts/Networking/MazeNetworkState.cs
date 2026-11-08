@@ -32,6 +32,34 @@ public struct NetworkDoorState : INetworkSerializable,
     }
 }
 
+public struct NetworkLightState : INetworkSerializable,
+    IEquatable<NetworkLightState>
+{
+    public int LightId;
+    public MazeLightState State;
+
+    public NetworkLightState(int lightId, MazeLightState state)
+    {
+        LightId = lightId;
+        State = state;
+    }
+
+    public bool Equals(NetworkLightState other)
+    {
+        return LightId == other.LightId &&
+               State == other.State;
+    }
+
+    public void NetworkSerialize<T>(
+        BufferSerializer<T> serializer)
+        where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref LightId);
+        serializer.SerializeValue(ref State);
+    }
+}
+
+
 public class MazeNetworkState : NetworkBehaviour
 {
     [Header("Initial Maze")]
@@ -49,6 +77,20 @@ public class MazeNetworkState : NetworkBehaviour
 
     // Other components can subscribe to state changes.
     public event Action<string, MazeDoorState> DoorStateChanged;
+
+
+    [Header("Light Settings")]
+    [SerializeField, Min(0.1f)]
+    private float lightOnSeconds = 5f;
+
+    private NetworkList<NetworkLightState> lights;
+
+    // Host-only timers.
+    private readonly Dictionary<int, float> lightOffTimes = new();
+    private readonly List<int> expiredLightIds = new();
+
+    public event Action<int, MazeLightState> LightStateChanged;
+
 
 
     [Header("Explorer Tracking")]
@@ -91,6 +133,7 @@ public class MazeNetworkState : NetworkBehaviour
     private void Awake()
     {
         doors = new NetworkList<NetworkDoorState>();
+        lights = new NetworkList<NetworkLightState>();
     }
 
     public override void OnNetworkSpawn()
@@ -104,9 +147,14 @@ public class MazeNetworkState : NetworkBehaviour
         if (IsServer)
             InitializeDoors();
 
+        lights.OnListChanged += OnLightListChanged;
+
+        if (IsServer)
+            InitializeLights();
+
         Debug.Log(
             $"MazeNetworkState spawned. " +
-            $"Server: {IsServer}, Doors: {doors.Count}",
+            $"Server: {IsServer}, Doors: {doors.Count}, Lights: {lights.Count}",
             this
         );
     }
@@ -119,6 +167,9 @@ public class MazeNetworkState : NetworkBehaviour
 
         doors.OnListChanged -= OnDoorListChanged;
         closeTimes.Clear();
+
+        lights.OnListChanged -= OnLightListChanged;
+        lightOffTimes.Clear();
     }
 
     // Host creates the initial door list from the Tiled layout.
@@ -247,6 +298,144 @@ public class MazeNetworkState : NetworkBehaviour
         }
     }
 
+
+    private void InitializeLights()
+    {
+        if (!IsServer)
+            return;
+
+        if (initialLayout == null)
+        {
+            Debug.LogError(
+                "Cannot initialize lights: no maze layout assigned.",
+                this
+            );
+            return;
+        }
+
+        lights.Clear();
+        lightOffTimes.Clear();
+
+        foreach (MazeLightData light in initialLayout.Lights)
+        {
+            lights.Add(new NetworkLightState(
+                light.id,
+                MazeLightState.Off
+            ));
+        }
+
+        Debug.Log(
+            $"Host initialized {lights.Count} networked lights.",
+            this
+        );
+    }
+
+
+    public void RequestToggleLight(int lightId)
+    {
+        if (!IsSpawned)
+            return;
+
+        RequestToggleLightRpc(lightId);
+    }
+
+    public void RequestOverloadLight(int lightId)
+    {
+        if (!IsSpawned)
+            return;
+
+        RequestOverloadLightRpc(lightId);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void RequestToggleLightRpc(int lightId)
+    {
+        if (!IsServer)
+            return;
+
+        foreach (NetworkLightState light in lights)
+        {
+            if (light.LightId != lightId)
+                continue;
+
+            // Broken lights cannot be toggled.
+            if (light.State == MazeLightState.Broken)
+                return;
+
+            MazeLightState nextState =
+                light.State == MazeLightState.On
+                    ? MazeLightState.Off
+                    : MazeLightState.On;
+
+            SetLightStateOnServer(lightId, nextState);
+            return;
+        }
+
+        Debug.LogWarning($"Unknown light ID: {lightId}", this);
+    }
+
+    [Rpc(SendTo.Server)]
+    private void RequestOverloadLightRpc(int lightId)
+    {
+        if (!IsServer)
+            return;
+
+        SetLightStateOnServer(
+            lightId,
+            MazeLightState.Broken
+        );
+    }
+
+
+    private void SetLightStateOnServer(
+        int lightId,
+        MazeLightState newState)
+    {
+        if (!IsServer)
+            return;
+
+        for (int i = 0; i < lights.Count; i++)
+        {
+            NetworkLightState light = lights[i];
+
+            if (light.LightId != lightId)
+                continue;
+
+            // Broken lights remain broken until a maze refresh.
+            if (light.State == MazeLightState.Broken &&
+                newState != MazeLightState.Broken)
+            {
+                return;
+            }
+
+            if (light.State != newState)
+            {
+                light.State = newState;
+                lights[i] = light;
+            }
+
+            // Only On lights need an automatic shutoff.
+            if (newState == MazeLightState.On)
+            {
+                lightOffTimes[lightId] =
+                    Time.time + lightOnSeconds;
+            }
+            else
+            {
+                // Off and Broken both cancel the countdown.
+                lightOffTimes.Remove(lightId);
+            }
+
+            return;
+        }
+
+        Debug.LogWarning(
+            $"Cannot change unknown light {lightId}.",
+            this
+        );
+    }
+
+
     // Automatic closing is processed only by the host.
     private void Update()
     {
@@ -269,6 +458,30 @@ public class MazeNetworkState : NetworkBehaviour
             );
         }
     }
+
+
+    private void LateUpdate()
+    {
+        if (!IsSpawned || !IsServer || lightOffTimes.Count == 0)
+            return;
+
+        expiredLightIds.Clear();
+
+        foreach (var entry in lightOffTimes)
+        {
+            if (Time.time >= entry.Value)
+                expiredLightIds.Add(entry.Key);
+        }
+
+        foreach (int lightId in expiredLightIds)
+        {
+            SetLightStateOnServer(
+                lightId,
+                MazeLightState.Off
+            );
+        }
+    }
+
 
     // Called when the NetworkList changes locally or remotely.
     private void OnDoorListChanged(
@@ -339,6 +552,10 @@ public class MazeNetworkState : NetworkBehaviour
         RequestToggleDoor(doors[0].DoorId.ToString());
     }
 
+
+
+    // position is in maze cell units: (0,0) = outer corner of cell (0,0),
+    // cell (x, y) centre = (x + 0.5, y + 0.5). Independent of cell size in metres.
     public void PublishExplorerPosition(Vector2 position)
     {
         if (!IsSpawned || !IsServer)
@@ -385,4 +602,63 @@ public class MazeNetworkState : NetworkBehaviour
             this
         );
     }
+
+
+    private void OnLightListChanged(
+        NetworkListEvent<NetworkLightState> change)
+    {
+        if (change.Type !=
+            NetworkListEvent<NetworkLightState>.EventType.Value)
+            return;
+
+        NetworkLightState light = change.Value;
+
+        LightStateChanged?.Invoke(
+            light.LightId,
+            light.State
+        );
+
+        Debug.Log(
+            $"[Maze Network] Light {light.LightId} -> {light.State} " +
+            $"(Server: {IsServer})",
+            this
+        );
+    }
+
+    public void ApplyCurrentLightStates(
+        Action<int, MazeLightState> apply)
+    {
+        if (!IsSpawned || apply == null)
+            return;
+
+        foreach (NetworkLightState light in lights)
+            apply(light.LightId, light.State);
+    }
+
+
+
+    [ContextMenu("Debug/Toggle First Network Light")]
+    private void DebugToggleFirstLight()
+    {
+        if (!IsSpawned || lights.Count == 0)
+        {
+            Debug.LogWarning("No networked lights found.", this);
+            return;
+        }
+
+        RequestToggleLight(lights[0].LightId);
+    }
+
+    [ContextMenu("Debug/Overload First Network Light")]
+    private void DebugOverloadFirstLight()
+    {
+        if (!IsSpawned || lights.Count == 0)
+        {
+            Debug.LogWarning("No networked lights found.", this);
+            return;
+        }
+
+        RequestOverloadLight(lights[0].LightId);
+    }
+
 }

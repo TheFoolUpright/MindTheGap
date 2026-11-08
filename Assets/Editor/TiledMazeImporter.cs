@@ -74,6 +74,8 @@ public static class TiledMazeImporter
                 maze.resourceSpawnCells
             );
 
+            layout.SetEntranceCell(maze.entranceCell);
+
             EditorUtility.SetDirty(layout);
             AssetDatabase.SaveAssets();
 
@@ -142,6 +144,9 @@ public static class TiledMazeImporter
 
         TiledLayer resourceSpawns =
             RequireObjectLayer(map, "ResourceSpawns");
+        
+        TiledLayer entrances =
+            RequireObjectLayer(map, "Entrances");   
 
         var result = new ImportedMaze
         {
@@ -201,6 +206,33 @@ public static class TiledMazeImporter
 
         result.resourceSpawnCells =
             ReadSpawnCells(map, resourceSpawns);
+
+
+        // Import the entrance position.
+        TiledObject[] entranceObjects =
+            entrances.objects ?? Array.Empty<TiledObject>();
+
+        if (entranceObjects.Length != 1)
+        {
+            throw new FormatException(
+                "The Entrances layer must contain exactly " +
+                "one BaseEntrance point."
+            );
+        }
+
+        TiledObject entrance = entranceObjects[0];
+
+        if (entrance.type != "BaseEntrance")
+        {
+            throw new FormatException(
+                "The entrance object must have type BaseEntrance."
+            );
+        }
+
+        // Reuse the same coordinate conversion as lights and spawns.
+        result.entranceCell =
+            ReadPointCell(entrance, map, "Entrances");
+
 
         return result;
     }
@@ -492,6 +524,7 @@ public static class TiledMazeImporter
         public int width;
         public int height;
         public float cellSize;
+        public Vector2Int entranceCell;
 
         public MazeEdgeType[] vertical;
         public MazeEdgeType[] horizontal;
@@ -535,6 +568,7 @@ public static class TiledMazeImporter
     {
         public int id;
         public string name;
+        public string type;
         public bool point;
 
         public float x;

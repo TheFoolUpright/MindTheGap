@@ -53,6 +53,19 @@ public class MazeLayoutData : ScriptableObject
     private Vector2Int[] resourceSpawnCells =
         Array.Empty<Vector2Int>();
 
+    [Header("Maze Entrance")]
+    [SerializeField] private bool hasEntrance;
+    [SerializeField] private Vector2Int entranceCell;
+
+    public bool HasEntrance => hasEntrance;
+    public Vector2Int EntranceCell => entranceCell;
+
+    public void SetEntranceCell(Vector2Int cell)
+    {
+        entranceCell = cell;
+        hasEntrance = true;
+    }
+
     public int LayoutId => layoutId;
     public int Width => width;
     public int Height => height;
@@ -171,6 +184,8 @@ public class MazeLayoutData : ScriptableObject
         lights = Array.Empty<MazeLightData>();
         enemySpawnCells = Array.Empty<Vector2Int>();
         resourceSpawnCells = Array.Empty<Vector2Int>();
+        hasEntrance = false;
+        entranceCell = Vector2Int.zero;
 
         for (int y = 0; y < height; y++)
         {

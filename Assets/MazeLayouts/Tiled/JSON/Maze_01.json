@@ -2143,7 +2143,7 @@
         {
          "name":"cellSize",
          "type":"float",
-         "value":4
+         "value":2
         }, 
         {
          "name":"layoutId",

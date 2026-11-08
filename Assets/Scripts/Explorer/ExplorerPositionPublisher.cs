@@ -27,9 +27,38 @@ public class ExplorerPositionPublisher : MonoBehaviour
     private Vector2 lastPublishedPosition;
     private bool hasPublished;
 
+    private ExplorerMazeBuilder mazeBuilder;
+    private bool warnedAboutCellSize;
+
     private void OnEnable()
     {
+        if (generatedMazeRoot != null)
+        {
+            mazeBuilder =
+                generatedMazeRoot.GetComponentInParent<ExplorerMazeBuilder>();
+        }
+
         StartCoroutine(FindNetworkState());
+    }
+
+    // Metres per maze cell in the geometry the Explorer is walking through.
+    private float GetBuiltCellSize()
+    {
+        if (mazeBuilder == null)
+            return 0f;
+
+        if (!warnedAboutCellSize && !mazeBuilder.BuiltCellSizeMatchesLayout)
+        {
+            warnedAboutCellSize = true;
+            Debug.LogWarning(
+                $"Explorer maze was built with {mazeBuilder.BuiltCellSize} m cells, " +
+                $"but '{mazeBuilder.Layout.name}' now says {mazeBuilder.Layout.CellSize} m. " +
+                "Regenerate the ExplorerMaze prefab so walls, lights and enemy spawns " +
+                "match the layout. The Navigator marker uses the built size meanwhile.",
+                mazeBuilder);
+        }
+
+        return mazeBuilder.BuiltCellSize;
     }
 
     private IEnumerator FindNetworkState()
@@ -50,6 +79,7 @@ public class ExplorerPositionPublisher : MonoBehaviour
         }
     }
 
+
     private void Update()
     {
         if (explorerHead == null || generatedMazeRoot == null)
@@ -65,30 +95,64 @@ public class ExplorerPositionPublisher : MonoBehaviour
 
         nextPublishTime = Time.unscaledTime + publishInterval;
 
-        // Convert the headset's world position into
-        // coordinates relative to the generated maze.
+        // POSITION
+        // Headset position relative to the maze root, in metres.
+        // (0,0) is the outer corner of cell (0,0); X = layout X, Z = layout Y.
         Vector3 localPosition =
             generatedMazeRoot.InverseTransformPoint(
                 explorerHead.position
             );
 
-        // The map uses X and Z, not height (Y).
-        Vector2 mapPosition = new Vector2(
-            localPosition.x,
-            localPosition.z
-        );
+        float cellSize = GetBuiltCellSize();
 
-        // Avoid sending insignificant movement.
-        if (hasPublished &&
-            Vector2.Distance(mapPosition, lastPublishedPosition)
-                < minimumMovement)
+        if (cellSize > 0f)
         {
-            return;
+            // Publish in maze cell units, so the Navigator doesn't need to
+            // know how big the Explorer's geometry is. Cell (x, y) spans
+            // [x, x+1) x [y, y+1); its centre is (x + 0.5, y + 0.5).
+            Vector2 cellPosition = new Vector2(
+                localPosition.x,
+                localPosition.z
+            ) / cellSize;
+
+            if (!hasPublished ||
+                Vector2.Distance(cellPosition, lastPublishedPosition) * cellSize
+                    >= minimumMovement)
+            {
+                mazeNetworkState.PublishExplorerPosition(cellPosition);
+
+                lastPublishedPosition = cellPosition;
+                hasPublished = true;
+            }
         }
 
-        mazeNetworkState.PublishExplorerPosition(mapPosition);
+        // FACING DIRECTION
+        Vector3 localForward =
+            generatedMazeRoot.InverseTransformDirection(
+                explorerHead.forward
+            );
 
-        lastPublishedPosition = mapPosition;
-        hasPublished = true;
+        // Ignore looking up or down.
+        localForward.y = 0f;
+
+        if (localForward.sqrMagnitude < 0.0001f)
+            return;
+
+        float facingDegrees = Mathf.Atan2(
+            localForward.x,
+            localForward.z
+        ) * Mathf.Rad2Deg;
+
+        if (!hasPublishedFacing ||
+            Mathf.Abs(Mathf.DeltaAngle(
+                lastPublishedFacing,
+                facingDegrees
+            )) >= minimumTurnDegrees)
+        {
+            mazeNetworkState.PublishExplorerFacing(facingDegrees);
+
+            lastPublishedFacing = facingDegrees;
+            hasPublishedFacing = true;
+        }
     }
 }

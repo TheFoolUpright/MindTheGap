@@ -26,8 +26,21 @@ public class ExplorerMazeBuilder : MonoBehaviour
     [SerializeField, Min(0.01f)] private float floorThickness = 0.2f;
     [SerializeField, Min(0f)] private float lightOffsetFromCeiling = 0.3f;
 
+    // Cell size (metres) the geometry under "Generated Maze" was actually built with.
+    // Re-importing the Tiled layout can change layout.CellSize without regenerating
+    // the geometry, so runtime code must use this value, not layout.CellSize.
+    [SerializeField, HideInInspector] private float generatedCellSize;
+
     public MazeLayoutData Layout => layout;
     public Transform GeneratedRoot => transform.Find("Generated Maze");
+
+    public float BuiltCellSize =>
+        generatedCellSize > 0f
+            ? generatedCellSize
+            : (layout != null ? layout.CellSize : 0f);
+
+    public bool BuiltCellSizeMatchesLayout =>
+        layout == null || Mathf.Approximately(BuiltCellSize, layout.CellSize);
 
 #if UNITY_EDITOR
     public void GenerateInEditor()
@@ -167,8 +180,12 @@ public class ExplorerMazeBuilder : MonoBehaviour
         surface.collectObjects = CollectObjects.Children;
         surface.useGeometry = NavMeshCollectGeometry.PhysicsColliders;
 
+        Undo.RecordObject(this, "Record Built Cell Size");
+        generatedCellSize = cell;
+        PrefabUtility.RecordPrefabInstancePropertyModifications(this);
+
         EditorSceneManager.MarkSceneDirty(gameObject.scene);
-        Debug.Log($"Editor maze generated: {wallCount} walls, {doorCount} doors, " +
+        Debug.Log($"Editor maze generated:{wallCount} walls, {doorCount} doors, " +
                   $"{layout.Lights.Count} lights. Bake the NavMesh AFTER generation.", this);
     }
 

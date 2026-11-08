@@ -13,6 +13,10 @@ public class GameSessionLoader : MonoBehaviour
     private bool sceneLoadingStarted;
     private string loadedRoleScene;
 
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    [SerializeField] private bool showDebugUI = false;
+#endif
+
     private IEnumerator Start()
     {
         NetworkManager net = NetworkManager.Singleton;
@@ -69,10 +73,25 @@ public class GameSessionLoader : MonoBehaviour
         Debug.Log(
             $"Role scene loaded: {loadedRoleScene}"
         );
+
+        // Wait for the shared GameSessionState to be available.
+        while (GameSessionState.Instance == null ||
+               !GameSessionState.Instance.IsSpawned)
+        {
+            yield return null;
+        }
+
+        // Tell the host our role scene has finished loading.
+        GameSessionState.Instance.ReportLocalRoleSceneLoaded();
+
     }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
 
     private void OnGUI()
     {
+        if (!showDebugUI)
+            return;
+
         GUILayout.BeginArea(
             new Rect(20, 20, 350, 105),
             GUI.skin.box
@@ -88,4 +107,6 @@ public class GameSessionLoader : MonoBehaviour
 
         GUILayout.EndArea();
     }
+
+#endif
 }

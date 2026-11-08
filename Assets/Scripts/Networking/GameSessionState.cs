@@ -1,4 +1,4 @@
-
+using System.Collections.Generic;
 using System;
 using Unity.Netcode;
 using UnityEngine;
@@ -26,6 +26,13 @@ public class GameSessionState : NetworkBehaviour
     // Other local scripts can subscribe to changes.
     public event Action<GamePhase> OnPhaseChanged;
 
+    // The host tracks which players loaded their role scenes.
+    private readonly HashSet<ulong> readyClients = new();
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+    [SerializeField] private bool showDebugUI = false;
+#endif
+
     public override void OnNetworkSpawn()
     {
         Instance = this;
@@ -52,6 +59,8 @@ public class GameSessionState : NetworkBehaviour
         {
             Instance = null;
         }
+
+        readyClients.Clear();
     }
 
     private void HandlePhaseChanged(
@@ -79,9 +88,13 @@ public class GameSessionState : NetworkBehaviour
         Phase.Value = newPhase;
     }
 
-    // Temporary test interface.
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+
     private void OnGUI()
     {
+        if (!showDebugUI)
+            return;
+
         if (!IsSpawned) return;
 
         GUILayout.BeginArea(
@@ -107,4 +120,78 @@ public class GameSessionState : NetworkBehaviour
 
         GUILayout.EndArea();
     }
+
+#endif
+
+
+    public void ReportLocalRoleSceneLoaded()
+    {
+        if (!IsSpawned)
+            return;
+
+        // The Explorer host can report directly.
+        if (IsServer)
+        {
+            MarkClientSceneLoaded(NetworkManager.LocalClientId);
+        }
+        else
+        {
+            // The Navigator tells the host it has loaded.
+            ReportRoleSceneLoadedRpc();
+        }
+    }
+
+    [Rpc(SendTo.Server)]
+    private void ReportRoleSceneLoadedRpc(RpcParams rpcParams = default)
+    {
+        MarkClientSceneLoaded(
+            rpcParams.Receive.SenderClientId
+        );
+    }
+
+    private void MarkClientSceneLoaded(ulong clientId)
+    {
+        if (!IsServer || Phase.Value != GamePhase.Initializing)
+            return;
+
+        // Verify the reporting player is connected.
+        bool connected = false;
+
+        foreach (ulong id in NetworkManager.ConnectedClientsIds)
+        {
+            if (id == clientId)
+            {
+                connected = true;
+                break;
+            }
+        }
+
+        if (!connected)
+            return;
+
+        if (readyClients.Add(clientId))
+        {
+            Debug.Log(
+                $"Role scene ready for client {clientId}."
+            );
+        }
+
+        // Mind the Gap currently requires exactly two players.
+        if (NetworkManager.ConnectedClientsIds.Count != 2)
+            return;
+
+        // Both connected players must be ready.
+        foreach (ulong id in NetworkManager.ConnectedClientsIds)
+        {
+            if (!readyClients.Contains(id))
+                return;
+        }
+
+        Debug.Log("Both role scenes loaded. Starting gameplay.");
+
+        SetPhase(GamePhase.Playing);
+    }
+
+
+
 }

@@ -1,4 +1,4 @@
-
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -17,22 +17,45 @@ public class NavigatorMapCursorPan : MonoBehaviour
     [SerializeField, Min(1f)] private float panSpeed = 500f;
     [SerializeField, Min(1f)] private float edgeZone = 75f;
 
+    [Header("Initial Map Focus")]
+    [SerializeField] private NavigatorMapBuilder mapBuilder;
+
+
+    [SerializeField, Range(0f, 1f)]
+    private float entranceVerticalPlacement = 0.75f;
+
     private Vector2 cursorPosition;
     private bool cursorCaptured;
 
-    private void Start()
+
+    private IEnumerator Start()
     {
-        if (mapViewport == null || mapContent == null || mapCursor == null)
+        if (mapViewport == null ||
+            mapContent == null ||
+            mapCursor == null ||
+            mapBuilder == null)
         {
-            Debug.LogError("Assign the map UI references.", this);
+            Debug.LogError(
+                "Assign the map UI and builder references.",
+                this
+            );
+
             enabled = false;
-            return;
+            yield break;
         }
 
-        // Start the cursor in the center of the map display.
+        // Start the virtual cursor in the center.
         cursorPosition = Vector2.zero;
         MoveCursor(Vector2.zero);
+
+        // Wait for Unity to finish laying out the UI.
+        yield return new WaitForEndOfFrame();
+
+        Canvas.ForceUpdateCanvases();
+
+        FocusOnEntrance();
     }
+
 
     private void Update()
     {
@@ -115,16 +138,17 @@ public class NavigatorMapCursorPan : MonoBehaviour
         Vector2 newPosition = mapContent.anchoredPosition
                               - direction * panSpeed * Time.deltaTime;
 
-        float minX = Mathf.Min(
-            0f, viewportSize.x - mapContent.rect.width
+        newPosition.x = ClampMapAxis(
+            newPosition.x,
+            viewportSize.x,
+            mapContent.rect.width
         );
 
-        float minY = Mathf.Min(
-            0f, viewportSize.y - mapContent.rect.height
+        newPosition.y = ClampMapAxis(
+            newPosition.y,
+            viewportSize.y,
+            mapContent.rect.height
         );
-
-        newPosition.x = Mathf.Clamp(newPosition.x, minX, 0f);
-        newPosition.y = Mathf.Clamp(newPosition.y, minY, 0f);
 
         mapContent.anchoredPosition = newPosition;
     }
@@ -156,4 +180,89 @@ public class NavigatorMapCursorPan : MonoBehaviour
     {
         ReleaseCursor();
     }
+
+
+    public void FocusOnEntrance()
+    {
+        MazeLayoutData layout = mapBuilder.Layout;
+
+        if (layout == null || !layout.HasEntrance)
+        {
+            Debug.LogWarning(
+                "Selected maze layout has no imported entrance.",
+                this
+            );
+            return;
+        }
+
+        Vector2Int entranceCell = layout.EntranceCell;
+
+        if (entranceCell.x < 0 ||
+            entranceCell.x >= layout.Width ||
+            entranceCell.y < 0 ||
+            entranceCell.y >= layout.Height)
+        {
+            Debug.LogWarning(
+                $"Entrance cell {entranceCell} is outside the maze.",
+                this
+            );
+            return;
+        }
+
+        float units = mapBuilder.UnitsPerCell;
+
+        // Entrance center in map UI coordinates.
+        Vector2 entrancePosition = new Vector2(
+            (entranceCell.x + 0.5f) * units,
+            (entranceCell.y + 0.5f) * units
+        );
+
+        Vector2 viewportSize = mapViewport.rect.size;
+        Vector2 contentSize = mapContent.rect.size;
+
+        // Desired entrance position inside the visible viewport.
+        Vector2 desiredPosition = new Vector2(
+            viewportSize.x * 0.5f,
+            viewportSize.y * entranceVerticalPlacement
+        );
+
+        Vector2 offset = desiredPosition - entrancePosition;
+
+        // Respect the map's panning boundaries.
+        offset.x = ClampMapAxis(
+            offset.x,
+            viewportSize.x,
+            contentSize.x
+        );
+
+        offset.y = ClampMapAxis(
+            offset.y,
+            viewportSize.y,
+            contentSize.y
+        );
+
+        mapContent.anchoredPosition = offset;
+
+        Debug.Log(
+            $"Map focused on entrance cell {entranceCell}.",
+            this
+        );
+    }
+
+    private float ClampMapAxis(
+        float position,
+        float viewportSize,
+        float contentSize)
+    {
+        // Center a map that's smaller than its viewport.
+        if (contentSize <= viewportSize)
+            return (viewportSize - contentSize) * 0.5f;
+
+        return Mathf.Clamp(
+            position,
+            viewportSize - contentSize,
+            0f
+        );
+    }
+
 }

@@ -12,6 +12,9 @@ public class NavigatorExplorerMarker : MonoBehaviour
     [SerializeField, Min(0f)]
     private float followSpeed = 15f;
 
+    [Header("Facing Direction")]
+    [SerializeField] private float rotationOffset = -45f;
+
     private MazeNetworkState mazeNetworkState;
     private Coroutine connectionCoroutine;
 
@@ -75,15 +78,14 @@ public class NavigatorExplorerMarker : MonoBehaviour
 
         MazeLayoutData layout = mapBuilder.Layout;
 
-        float mazeWidth = layout.Width * layout.CellSize;
-        float mazeHeight = layout.Height * layout.CellSize;
-
+        // mazePosition is in maze cell units (see ExplorerPositionPublisher):
+        // (0,0) is the outer corner of cell (0,0), cell centres sit at +0.5.
         // Only display the Explorer inside the map boundaries.
         bool insideMaze =
             mazePosition.x >= 0f &&
             mazePosition.y >= 0f &&
-            mazePosition.x < mazeWidth &&
-            mazePosition.y < mazeHeight;
+            mazePosition.x < layout.Width &&
+            mazePosition.y < layout.Height;
 
         if (!insideMaze)
         {
@@ -91,10 +93,9 @@ public class NavigatorExplorerMarker : MonoBehaviour
             return;
         }
 
-        // Convert maze metres into Navigator UI units.
-        float scale = mapBuilder.UnitsPerCell / layout.CellSize;
-
-        targetPosition = mazePosition * scale;
+        // Convert cells into Navigator UI units. The marker is anchored to
+        // the bottom-left of the map, matching the generated walls.
+        targetPosition = mazePosition * mapBuilder.UnitsPerCell;
 
         // Snap the marker to its first valid position.
         if (!hasTarget)
@@ -155,13 +156,10 @@ public class NavigatorExplorerMarker : MonoBehaviour
         if (explorerMarker == null)
             return;
 
-        // The marker arrow points upward by default.
-        // Unity UI needs a negative Z rotation for
-        // clockwise turning toward the right.
         explorerMarker.localRotation = Quaternion.Euler(
             0f,
             0f,
-            -facingDegrees
+            -facingDegrees + rotationOffset
         );
     }
 

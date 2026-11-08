@@ -15,7 +15,7 @@ public class ExplorerLight : MonoBehaviour
     [Header("Light State")]
     [SerializeField]
     private MazeLightState currentState =
-        MazeLightState.On;
+    MazeLightState.Off;
 
     public int LightId => lightId;
     public MazeLightState CurrentState => currentState;
@@ -48,7 +48,7 @@ public class ExplorerLight : MonoBehaviour
     // Used when a new maze cycle begins.
     public void ResetForRefresh()
     {
-        currentState = MazeLightState.On;
+        currentState = MazeLightState.Off;
         UpdateAppearance();
     }
 
@@ -62,12 +62,35 @@ public class ExplorerLight : MonoBehaviour
         }
 
         // Optional broken-light visual.
-        if (brokenIndicator != null)
+        if (brokenIndicator != null && IsSafeBrokenIndicator())
         {
             brokenIndicator.SetActive(
                 currentState == MazeLightState.Broken
             );
         }
+    }
+
+    // The broken indicator must be a separate child object. If it is this
+    // object (or a parent of the Light), hiding it would hide the whole lamp,
+    // including the Point Light, so the light could never be seen.
+    private bool IsSafeBrokenIndicator()
+    {
+        bool hidesLamp =
+            brokenIndicator == gameObject ||
+            transform.IsChildOf(brokenIndicator.transform) ||
+            (lightSource != null &&
+             lightSource.transform.IsChildOf(brokenIndicator.transform));
+
+        if (hidesLamp)
+        {
+            Debug.LogWarning(
+                $"{name}: Broken Indicator would hide the light itself. " +
+                "Assign a separate child object instead.",
+                this
+            );
+        }
+
+        return !hidesLamp;
     }
 
     // Temporary testing commands.

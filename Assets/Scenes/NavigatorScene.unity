@@ -12657,6 +12657,8 @@ GameObject:
   - component: {fileID: 1072929511}
   - component: {fileID: 1072929512}
   - component: {fileID: 1072929513}
+  - component: {fileID: 1072929514}
+  - component: {fileID: 1072929515}
   m_Layer: 0
   m_Name: NavigatorMapSystem
   m_TagString: Untagged
@@ -12717,6 +12719,9 @@ MonoBehaviour:
   cursorPadding: 10
   panSpeed: 500
   edgeZone: 75
+  mapBuilder: {fileID: 1072929504}
+  entranceCell: {x: 0, y: 0}
+  entranceVerticalPlacement: 0.75
 --- !u!114 &1072929507
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12824,6 +12829,33 @@ MonoBehaviour:
   mapBuilder: {fileID: 1072929504}
   explorerMarker: {fileID: 28736474}
   followSpeed: 15
+  rotationOffset: -45
+--- !u!114 &1072929514
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072929502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 248b5600f4b10394f97dc5316e8cf251, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MazeLightNetworkBinding
+  generatedRoot: {fileID: 1254977764}
+--- !u!114 &1072929515
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072929502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ce4dc6c7a5f7af448524c083871c3fc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NavigatorLightCodeHandler
+  codeEntry: {fileID: 1072929510}
 --- !u!1001 &1078587011
 PrefabInstance:
   m_ObjectHideFlags: 0
