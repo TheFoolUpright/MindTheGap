@@ -149,6 +149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LobbyHUD
   lobbyManager: {fileID: 1794480042}
+  flatCamera: {fileID: 120943315}
 --- !u!4 &55771889
 Transform:
   m_ObjectHideFlags: 0
