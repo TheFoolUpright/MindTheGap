@@ -122,32 +122,4 @@ public class ReceiverNetworkState : NetworkBehaviour
             $"Receiver updated with: {symbolName}"
         );
     }
-
-    // Temporary IMGUI test controls.
-    private void OnGUI()
-    {
-        if (!IsSpawned || !IsClient || IsServer)
-            return;
-
-        GUILayout.BeginArea(
-            new Rect(20, 300, 300, 210),
-            GUI.skin.box
-        );
-
-        GUILayout.Label("RECEIVER NETWORK TEST");
-
-        if (GUILayout.Button("Send LIGHT"))
-            SendSymbol(ReceiverSymbols.Light);
-
-        if (GUILayout.Button("Send DOOR"))
-            SendSymbol(ReceiverSymbols.Door);
-
-        if (GUILayout.Button("Send ENEMY"))
-            SendSymbol(ReceiverSymbols.Enemy);
-
-        if (GUILayout.Button("Send RETURN"))
-            SendSymbol(ReceiverSymbols.Return);
-
-        GUILayout.EndArea();
-    }
 }

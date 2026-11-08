@@ -12659,6 +12659,7 @@ GameObject:
   - component: {fileID: 1072929513}
   - component: {fileID: 1072929514}
   - component: {fileID: 1072929515}
+  - component: {fileID: 1072929520}
   m_Layer: 0
   m_Name: NavigatorMapSystem
   m_TagString: Untagged
@@ -12762,6 +12763,18 @@ MonoBehaviour:
   layout: {fileID: 11400000, guid: 37659acfe353e254bb799b2bbd6a1447, type: 2}
   dialMinimum: 0
   dialMaximum: 9
+--- !u!114 &1072929520
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072929502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cdc3d177f5b04ddeb7c55d009fc799a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NavigatorReceiverKeyboardInput
 --- !u!114 &1072929509
 MonoBehaviour:
   m_ObjectHideFlags: 0
