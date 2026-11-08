@@ -2555,6 +2555,7 @@ GameObject:
   - component: {fileID: 121743376}
   - component: {fileID: 121743375}
   - component: {fileID: 121743378}
+  - component: {fileID: 121743379}
   m_Layer: 0
   m_Name: GameMaze
   m_TagString: Untagged
@@ -2625,6 +2626,21 @@ MonoBehaviour:
   enemyPrefab: {fileID: 7988466343413025167, guid: c036c27a239802b47b85d266ebc7f2d3, type: 3}
   spawnPointPrefab: {fileID: 3174525807440125560, guid: 8a3a6899c9ef4c618c00d6bf7247fd01, type: 3}
   firstSpawnDelay: 5
+--- !u!114 &121743379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 121743374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 773766e5a3a8f9943ba850c743cdc628, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ResourceSpawn
+  cubePrefab: {fileID: 802104660332102217, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
+  pyramidPrefab: {fileID: 6020597294099680485, guid: 960d69f6ca9ed484c9f7f34b7a356757, type: 3}
+  cutter: {fileID: 548145654}
 --- !u!1 &127450078
 GameObject:
   m_ObjectHideFlags: 0
@@ -7512,6 +7528,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4094079782553688, guid: 6e1c71d0162d0d7459f00296928fa566, type: 3}
   m_PrefabInstance: {fileID: 545381133}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &548145654 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4189861720583654351, guid: ff19a16f8db2a444e96e4149c98f6802, type: 3}
+  m_PrefabInstance: {fileID: 605351412}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 389eb2feb78bbc24a89239a4f2e5f8c0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CutterTool
 --- !u!1001 &549540276
 PrefabInstance:
   m_ObjectHideFlags: 0

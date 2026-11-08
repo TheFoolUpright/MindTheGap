@@ -38,17 +38,17 @@ public class CuttingProgress : MonoBehaviour
     // They allow the UI to read the state of the cut without changing it.
     public bool HasStarted
     {
-        get { return started; }
+        get {return started;}
     }
 
     public float StartDistance
     {
-        get { return startDistance; }
+        get {return startDistance;}
     }
 
     public int Direction
     {
-        get { return direction; }
+        get {return direction;}
     }
     // End of the UI reading section ------------------
 
@@ -69,9 +69,13 @@ public class CuttingProgress : MonoBehaviour
         }
     }
 
-    public bool IsCompleted
+    public bool IsCompleted {get {return completed;}}
+
+    public CutterTool Cutter => cutter;
+
+    public void SetCutter(CutterTool sceneCutter)
     {
-        get { return completed; }
+        cutter = sceneCutter;
     }
 
     private void Awake()

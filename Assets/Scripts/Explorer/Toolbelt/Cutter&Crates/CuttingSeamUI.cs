@@ -58,13 +58,14 @@ public class CuttingSeamUI : MonoBehaviour
     {
         bool visible = alwaysVisible;
 
+        CutterTool activeCutter = cutter;
+        if (activeCutter == null)
+            activeCutter = progress.Cutter;
+
         // Show the seam when the held cutter is nearby.
-        if (!visible && cutter != null && cutter.IsHeldByHand)
+        if (!visible && activeCutter != null && activeCutter.IsHeldByHand)
         {
-            float distance = Vector3.Distance(
-                cutter.transform.position,
-                path.transform.position
-            );
+            float distance = Vector3.Distance(activeCutter.transform.position, path.transform.position);
 
             visible = distance <= visibleDistance;
         }

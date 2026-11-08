@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
+using System.Collections.Generic;
 
 public class ResourceContainer : MonoBehaviour
 {
@@ -23,10 +24,15 @@ public class ResourceContainer : MonoBehaviour
     [SerializeField] private float lidLifetime = 10f;
     [SerializeField] private float releaseDelay = 0.5f;
 
+    private readonly List<XRGrabInteractable> spawnedResources = new List<XRGrabInteractable>();
     private bool opened;
     private float deleteTime;
     private float releaseDeleteTime = -1f;
 
+    public void RegisterSpawnedResource(XRGrabInteractable resource)
+    {
+        spawnedResources.Add(resource);
+    }
     public void Open()
     {
         // Opening must happen only once.
@@ -82,23 +88,39 @@ public class ResourceContainer : MonoBehaviour
         if (cuttingUI != null)
             cuttingUI.SetActive(false);
 
-        foreach (XRGrabInteractable resource in resources)
+        if (resources != null)
+        {
+            foreach (XRGrabInteractable resource in resources)
+                ReleaseResource(resource);
+        }
+
+        foreach (XRGrabInteractable resource in spawnedResources)
         {
             if (resource == null)
                 continue;
 
-            Rigidbody resourceBody = resource.GetComponent<Rigidbody>();
-
-            if (resourceBody != null)
-            {
-                resourceBody.useGravity = true;
-                resourceBody.isKinematic = false;
-            }
-
-            resource.enabled = true;
+            resource.transform.SetParent(null, true);
+            ReleaseResource(resource);
         }
 
+        spawnedResources.Clear();
+
         deleteTime = Time.time + lidLifetime;
+    }
+
+    private static void ReleaseResource(XRGrabInteractable resource)
+    {
+        if (resource == null)
+            return;
+
+        Rigidbody resourceBody = resource.GetComponent<Rigidbody>();
+        if (resourceBody != null)
+        {
+            resourceBody.useGravity = true;
+            resourceBody.isKinematic = false;
+        }
+
+        resource.enabled = true;
     }
 
     private void Update()

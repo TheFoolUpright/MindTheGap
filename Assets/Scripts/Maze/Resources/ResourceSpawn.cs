@@ -2,14 +2,13 @@ using UnityEngine;
 using UnityEngine.XR.Interaction.Toolkit.Interactables;
 using UnityEngine.XR.Interaction.Toolkit.Interactors;
 
-[DisallowMultipleComponent]
 [RequireComponent(typeof(MazeRefresh))]
 public class ResourceSpawn : MonoBehaviour
 {
     private const int CubeThreshold = 35;
     private const int PyramidThreshold = 70;
 
-    [SerializeField] private BagResource cubePrefab;
+    [SerializeField] private BagResource cubePrefab;    
     [SerializeField] private BagResource pyramidPrefab;
     [SerializeField] private CutterTool cutter;
 
@@ -23,11 +22,12 @@ public class ResourceSpawn : MonoBehaviour
             Debug.LogWarning("ResourceSpawn: assign the scene's Cutter Tool.", this);
     }
 
+    // Subscribe to the event when the object is enabled
     private void OnEnable()
     {
         mazeRefresh.LayoutWillRefresh += RemoveLooseResources;
     }
-
+    // Unsubscribe from the event when the object is disabled to prevent memory leaks
     private void OnDisable()
     {
         mazeRefresh.LayoutWillRefresh -= RemoveLooseResources;
@@ -93,9 +93,7 @@ public class ResourceSpawn : MonoBehaviour
 
     private void RemoveLooseResources(Transform previousLayout)
     {
-        BagResource[] resources = FindObjectsByType<BagResource>(
-            FindObjectsInactive.Include, FindObjectsSortMode.None
-        );
+        BagResource[] resources = FindObjectsByType<BagResource>(FindObjectsInactive.Include, FindObjectsSortMode.None);
 
         foreach (BagResource resource in resources)
         {
@@ -125,5 +123,7 @@ public class ResourceSpawn : MonoBehaviour
             if (interactor is not XRSocketInteractor)
                 return true;
         }
+
+        return false;
     }
 }

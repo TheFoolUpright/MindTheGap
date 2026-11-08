@@ -14,7 +14,8 @@ public class MazeRefresh : MonoBehaviour
     }
 
     public event System.Action<GameObject, Transform> LayoutChanged;
-    public MazeLayoutData CurrentLayoutData { get; private set; }
+    public MazeLayoutData CurrentLayoutData { get; private set;}
+    public event System.Action<Transform> LayoutWillRefresh;
 
     [SerializeField] private LayoutEntry[] layouts = new LayoutEntry[0];
     [SerializeField] private float refreshInterval = 60f;
@@ -89,8 +90,12 @@ public class MazeRefresh : MonoBehaviour
     {
         GameObject prefab = entry.layoutPrefab;
         GameObject previousLayout = activeLayout;
+
         if (previousLayout != null)
+        {
+            LayoutWillRefresh?.Invoke(previousLayout.transform);
             previousLayout.SetActive(false);
+        }
 
         activeLayout = Instantiate(prefab, transform, false);
         activeLayout.SetActive(true);

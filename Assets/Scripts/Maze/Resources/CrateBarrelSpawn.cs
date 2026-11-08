@@ -5,6 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(MazeRefresh))]
 public class CrateBarrelSpawn : MonoBehaviour
 {
+    private ResourceSpawn resourceSpawn;
     private const int SpawnCount = 3;
 
     [SerializeField] private GameObject resourceSpawnerPrefab;
@@ -16,6 +17,8 @@ public class CrateBarrelSpawn : MonoBehaviour
     private void Awake()
     {
         mazeRefresh = GetComponent<MazeRefresh>();
+
+        resourceSpawn = GetComponent<ResourceSpawn>();
     }
 
     private void OnEnable()
@@ -87,6 +90,8 @@ public class CrateBarrelSpawn : MonoBehaviour
             Vector3 center = layoutRoot.TransformPoint(data.GetCellCenterLocal(cell.x, cell.y));
             GameObject instance = Instantiate(resourceSpawnerPrefab, center, rotation, layoutRoot);
             instance.name = $"{resourceSpawnerPrefab.name} ({cell.x}, {cell.y})";
+            if (resourceSpawn != null && resourceSpawn.isActiveAndEnabled)
+                resourceSpawn.Populate(instance);
         }
     }
 }
