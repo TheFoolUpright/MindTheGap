@@ -6,24 +6,35 @@ using UnityEngine.InputSystem;
 [DisallowMultipleComponent]
 public class MazeRefresh : MonoBehaviour
 {
-    // For enemies to know when the layout has changed so they can update their pathfinding.
+    [System.Serializable]
+    private class LayoutEntry
+    {
+        public GameObject layoutPrefab;
+        public MazeLayoutData layoutData;
+    }
+
     public event System.Action<GameObject, Transform> LayoutChanged;
-    [SerializeField] private GameObject[] layoutPrefabs = new GameObject[0];
+    public MazeLayoutData CurrentLayoutData { get; private set; }
+
+    [SerializeField] private LayoutEntry[] layouts = new LayoutEntry[0];
     [SerializeField] private float refreshInterval = 60f;
     [SerializeField] private float secondsRemaining;
 
     // using CYCLE allows for a more efficient shuffle and avoids the need to create a new list every time.
-    private readonly List<GameObject> cycle = new List<GameObject>();
+    private readonly List<LayoutEntry> cycle = new List<LayoutEntry>();
     private GameObject activeLayout;
     private int currentIndex;
     private float nextRefreshTime;
 
     private void Start()
     {
-        foreach (GameObject prefab in layoutPrefabs)
+        var usedPrefabs = new HashSet<GameObject>();
+        foreach (LayoutEntry entry in layouts)
         {
-            if (prefab == null || cycle.Contains(prefab))
+            if (entry == null || entry.layoutPrefab == null || !usedPrefabs.Add(entry.layoutPrefab))
                 continue;
+
+            GameObject prefab = entry.layoutPrefab;
 
             if (!prefab.TryGetComponent(out NavMeshSurface surface) ||
                 !surface.enabled || surface.navMeshData == null)
@@ -32,7 +43,7 @@ public class MazeRefresh : MonoBehaviour
                 continue;
             }
 
-            cycle.Add(prefab);
+            cycle.Add(entry);
         }
 
         if (cycle.Count > 0)
@@ -70,12 +81,13 @@ public class MazeRefresh : MonoBehaviour
         }
 
         ActivateLayout(cycle[nextIndex]);
-        Debug.Log($"Maze refreshed from '{cycle[currentIndex].name}' to '{cycle[nextIndex].name}'.", this);
+        Debug.Log($"Maze refreshed from '{cycle[currentIndex].layoutPrefab.name}' to '{cycle[nextIndex].layoutPrefab.name}'.", this);
         currentIndex = nextIndex;
     }
 
-    private void ActivateLayout(GameObject prefab)
+    private void ActivateLayout(LayoutEntry entry)
     {
+        GameObject prefab = entry.layoutPrefab;
         GameObject previousLayout = activeLayout;
         if (previousLayout != null)
             previousLayout.SetActive(false);
@@ -90,7 +102,7 @@ public class MazeRefresh : MonoBehaviour
 
         // Both manual and timed refreshes start a fresh countdown.
         nextRefreshTime = Time.time + Mathf.Max(1f, refreshInterval);
-        // Notify enemies that the layout has changed
+        CurrentLayoutData = entry.layoutData;
         LayoutChanged?.Invoke(prefab, activeLayout.transform);
     }
 
@@ -99,9 +111,9 @@ public class MazeRefresh : MonoBehaviour
         for (int i = cycle.Count - 1; i > firstIndex; i--)
         {
             int otherIndex = Random.Range(firstIndex, i + 1);
-            GameObject prefab = cycle[i];
+            LayoutEntry entry = cycle[i];
             cycle[i] = cycle[otherIndex];
-            cycle[otherIndex] = prefab;
+            cycle[otherIndex] = entry;
         }
     }
 }

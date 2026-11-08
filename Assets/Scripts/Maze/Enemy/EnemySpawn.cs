@@ -3,15 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class EnemySpawn : MonoBehaviour 
+public class EnemySpawn : MonoBehaviour
 {
-    [System.Serializable]
-    private class LayoutEntry
-    {
-        public GameObject layoutPrefab;
-        public MazeLayoutData layoutData;
-    }
-
     private class SpawnPoint
     {
         public Transform marker;
@@ -21,7 +14,6 @@ public class EnemySpawn : MonoBehaviour
     [SerializeField] private MazeRefresh mazeRefresh;
     [SerializeField] private GameObject enemyPrefab;
     [SerializeField] private GameObject spawnPointPrefab;
-    [SerializeField] private LayoutEntry[] layouts = new LayoutEntry[0];
     [SerializeField] private float firstSpawnDelay = 5f;
 
     /*
@@ -74,7 +66,7 @@ public class EnemySpawn : MonoBehaviour
 
     // SetLayout is called when the maze layout changes, and it updates the spawn points accordingly.
     // Also attempts to restore count of enemies that were present before the layout change.
-    private void SetLayout(GameObject layoutPrefab, Transform layoutRoot)
+    private void SetLayout(GameObject _, Transform layoutRoot)
     {
         int enemiesToRestore = CountEnemies();
         points.Clear();
@@ -82,15 +74,7 @@ public class EnemySpawn : MonoBehaviour
         if (prefabAgent == null || spawnPointPrefab == null)
             return;
 
-        MazeLayoutData data = null;
-        foreach (LayoutEntry entry in layouts)
-        {
-            if (entry != null && entry.layoutPrefab == layoutPrefab)
-            {
-                data = entry.layoutData;
-                break; // Stop searching once the matching layout is found
-            }
-        }
+        MazeLayoutData data = mazeRefresh.CurrentLayoutData;
 
         if (data == null || !data.IsConfigured)
             return;

@@ -71,4 +71,9 @@ MonoBehaviour:
   - {x: 3, y: 0}
   - {x: 13, y: 8}
   resourceSpawnCells:
-  - {x: 0, y: 6}
+  - {x: 6, y: 8}
+  - {x: 1, y: 8}
+  - {x: 12, y: 9}
+  - {x: 13, y: 3}
+  - {x: 3, y: 3}
+  - {x: 8, y: 0}
