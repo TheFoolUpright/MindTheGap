@@ -99,8 +99,28 @@ public class ExplorerPositionPublisher : MonoBehaviour
     }
 
 
+    private bool warnedAboutHead;
+
     private void Update()
     {
+        // Explorer Head isn't assigned in every scene (ExplorerScene uses the
+        // ExplorerMaze tool prefab, where it's empty). Fall back to the XR camera.
+        if (explorerHead == null && Camera.main != null)
+        {
+            explorerHead = Camera.main.transform;
+
+            if (!warnedAboutHead)
+            {
+                warnedAboutHead = true;
+                Debug.LogWarning(
+                    $"ExplorerPositionPublisher: 'Explorer Head' is not assigned, " +
+                    $"using Camera.main ('{explorerHead.name}'). Assign the XR camera " +
+                    "in the Inspector to silence this.",
+                    this
+                );
+            }
+        }
+
         if (explorerHead == null || generatedMazeRoot == null)
             return;
 
