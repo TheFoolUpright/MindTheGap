@@ -16,8 +16,18 @@ public class NavigatorMapBuilder : MonoBehaviour
     [SerializeField, Min(1f)] private float unitsPerCell = 24f;
     [SerializeField, Min(1f)] private float wallThickness = 4f;
 
-    public MazeLayoutData Layout => layout;
+    // Set at runtime by NavigatorMazeController after a map swap.
+    // Not serialized, so Editor generation always uses 'layout'.
+    private MazeLayoutData runtimeLayout;
+
+    public MazeLayoutData Layout =>
+        runtimeLayout != null ? runtimeLayout : layout;
     public float UnitsPerCell => unitsPerCell;
+
+    public void SetRuntimeLayout(MazeLayoutData newLayout)
+    {
+        runtimeLayout = newLayout;
+    }
 
     public Transform GeneratedRoot =>
         mapContent != null

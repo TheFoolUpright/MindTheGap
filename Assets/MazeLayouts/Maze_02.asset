@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fb35341e006cde74f9baaa16e8659112, type: 3}
-  m_Name: Maze_01_TEST
+  m_Name: Maze_02
   m_EditorClassIdentifier: Assembly-CSharp::MazeLayoutData
-  layoutId: 3
+  layoutId: 4
   width: 16
   height: 10
   cellSize: 2
@@ -67,13 +67,7 @@ MonoBehaviour:
   explorerSpawnCell: {x: 7, y: 9}
   enemySpawnCells:
   - {x: 2, y: 7}
-  - {x: 12, y: 7}
-  - {x: 2, y: 0}
-  - {x: 10, y: 0}
   resourceSpawnCells:
   - {x: 0, y: 6}
-  - {x: 9, y: 8}
-  - {x: 13, y: 3}
-  - {x: 6, y: 1}
-  - {x: 0, y: 0}
-  - {x: 9, y: 4}
+  hasEntrance: 1
+  entranceCell: {x: 7, y: 9}

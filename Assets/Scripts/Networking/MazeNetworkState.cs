@@ -62,8 +62,22 @@ public struct NetworkLightState : INetworkSerializable,
 
 public class MazeNetworkState : NetworkBehaviour
 {
-    [Header("Initial Maze")]
+    // Optional. Only used by scenes without MazeRefresh.
+    // With MazeRefresh, the host calls ResetForLayout instead.
+    [Header("Fallback Maze (scenes without MazeRefresh)")]
     [SerializeField] private MazeLayoutData initialLayout;
+
+    // The refresh generation the door and light lists belong to.
+    // Written after the lists, so a client that sees this value
+    // also has the matching lists.
+    private readonly NetworkVariable<int> stateGeneration =
+        new NetworkVariable<int>(
+            0,
+            NetworkVariableReadPermission.Everyone,
+            NetworkVariableWritePermission.Server
+        );
+
+    public int StateGeneration => stateGeneration.Value;
 
     [Header("Door Settings")]
     [SerializeField, Min(0.1f)]
@@ -143,14 +157,13 @@ public class MazeNetworkState : NetworkBehaviour
         explorerFacingDegrees.OnValueChanged += OnExplorerFacingChanged;
 
         doors.OnListChanged += OnDoorListChanged;
-
-        if (IsServer)
-            InitializeDoors();
-
         lights.OnListChanged += OnLightListChanged;
 
-        if (IsServer)
-            InitializeLights();
+        if (IsServer && initialLayout != null)
+        {
+            InitializeDoors(initialLayout);
+            InitializeLights(initialLayout);
+        }
 
         Debug.Log(
             $"MazeNetworkState spawned. " +
@@ -172,13 +185,49 @@ public class MazeNetworkState : NetworkBehaviour
         lightOffTimes.Clear();
     }
 
-    // Host creates the initial door list from the Tiled layout.
-    private void InitializeDoors()
+    // Host only. Replaces every door and light with the ones in the
+    // new layout: doors Closed, lights Off (Broken lights are restored),
+    // and all host timers cancelled.
+    public void ResetForLayout(MazeLayoutData layout, int generation)
+    {
+        if (!IsSpawned || !IsServer)
+        {
+            Debug.LogWarning(
+                "Only the host can reset the maze state.",
+                this
+            );
+            return;
+        }
+
+        if (layout == null || !layout.IsConfigured)
+        {
+            Debug.LogError(
+                "ResetForLayout needs a valid layout.",
+                this
+            );
+            return;
+        }
+
+        InitializeDoors(layout);
+        InitializeLights(layout);
+
+        // Written last: clients use it to know the lists are current.
+        stateGeneration.Value = generation;
+
+        Debug.Log(
+            $"[Maze Network] Reset for layout {layout.LayoutId}, " +
+            $"generation {generation}.",
+            this
+        );
+    }
+
+    // Host creates the door list from the Tiled layout.
+    private void InitializeDoors(MazeLayoutData layout)
     {
         if (!IsServer)
             return;
 
-        if (initialLayout == null || !initialLayout.IsConfigured)
+        if (layout == null || !layout.IsConfigured)
         {
             Debug.LogError("MazeNetworkState needs a valid layout.", this);
             return;
@@ -186,13 +235,14 @@ public class MazeNetworkState : NetworkBehaviour
 
         doors.Clear();
         closeTimes.Clear();
+        expiredDoors.Clear();
 
         // Vertical doors.
-        for (int y = 0; y < initialLayout.Height; y++)
+        for (int y = 0; y < layout.Height; y++)
         {
-            for (int x = 0; x <= initialLayout.Width; x++)
+            for (int x = 0; x <= layout.Width; x++)
             {
-                if (initialLayout.GetVerticalEdge(x, y) !=
+                if (layout.GetVerticalEdge(x, y) !=
                     MazeEdgeType.Door)
                     continue;
 
@@ -204,11 +254,11 @@ public class MazeNetworkState : NetworkBehaviour
         }
 
         // Horizontal doors.
-        for (int y = 0; y <= initialLayout.Height; y++)
+        for (int y = 0; y <= layout.Height; y++)
         {
-            for (int x = 0; x < initialLayout.Width; x++)
+            for (int x = 0; x < layout.Width; x++)
             {
-                if (initialLayout.GetHorizontalEdge(x, y) !=
+                if (layout.GetHorizontalEdge(x, y) !=
                     MazeEdgeType.Door)
                     continue;
 
@@ -299,12 +349,12 @@ public class MazeNetworkState : NetworkBehaviour
     }
 
 
-    private void InitializeLights()
+    private void InitializeLights(MazeLayoutData layout)
     {
         if (!IsServer)
             return;
 
-        if (initialLayout == null)
+        if (layout == null)
         {
             Debug.LogError(
                 "Cannot initialize lights: no maze layout assigned.",
@@ -315,8 +365,9 @@ public class MazeNetworkState : NetworkBehaviour
 
         lights.Clear();
         lightOffTimes.Clear();
+        expiredLightIds.Clear();
 
-        foreach (MazeLightData light in initialLayout.Lights)
+        foreach (MazeLightData light in layout.Lights)
         {
             lights.Add(new NetworkLightState(
                 light.id,

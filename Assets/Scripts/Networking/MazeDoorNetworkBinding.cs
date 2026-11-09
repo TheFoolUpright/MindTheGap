@@ -113,6 +113,14 @@ public class MazeDoorNetworkBinding : MonoBehaviour
         }
     }
 
+    // Called by the refresh system: point at the new maze or map
+    // and apply the current network state to its doors.
+    public void SetRoot(Transform newRoot)
+    {
+        generatedRoot = newRoot;
+        RefreshDoorReferences();
+    }
+
     // Useful when replacing the generated maze during a refresh.
     public void RefreshDoorReferences()
     {

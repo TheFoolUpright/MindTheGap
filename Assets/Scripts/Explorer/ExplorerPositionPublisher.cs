@@ -30,6 +30,22 @@ public class ExplorerPositionPublisher : MonoBehaviour
     private ExplorerMazeBuilder mazeBuilder;
     private bool warnedAboutCellSize;
 
+    // Set by MazeRefresh. When > 0 it replaces the ExplorerMazeBuilder lookup.
+    private float runtimeCellSize;
+
+    // Called by MazeRefresh after each new maze is instantiated.
+    public void SetRoot(Transform newRoot, float cellSize)
+    {
+        generatedMazeRoot = newRoot;
+        runtimeCellSize = cellSize;
+        mazeBuilder = null;
+
+        // Publish the new position straight away.
+        hasPublished = false;
+        hasPublishedFacing = false;
+        nextPublishTime = 0f;
+    }
+
     private void OnEnable()
     {
         if (generatedMazeRoot != null)
@@ -44,6 +60,9 @@ public class ExplorerPositionPublisher : MonoBehaviour
     // Metres per maze cell in the geometry the Explorer is walking through.
     private float GetBuiltCellSize()
     {
+        if (runtimeCellSize > 0f)
+            return runtimeCellSize;
+
         if (mazeBuilder == null)
             return 0f;
 

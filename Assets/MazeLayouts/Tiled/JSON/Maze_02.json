@@ -2247,12 +2247,12 @@
         {
          "name":"cellSize",
          "type":"float",
-         "value":4
+         "value":2
         }, 
         {
          "name":"layoutId",
          "type":"int",
-         "value":3
+         "value":4
         }],
  "renderorder":"right-down",
  "tiledversion":"1.12.2",

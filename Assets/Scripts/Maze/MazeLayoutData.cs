@@ -33,7 +33,7 @@ public class MazeLayoutData : ScriptableObject
     [SerializeField] private int layoutId = 1;
     [SerializeField] private int width = 5;
     [SerializeField] private int height = 5;
-    [SerializeField] private float cellSize = 4f;
+    [SerializeField] private float cellSize = 2f;
 
     // Each shared edge is stored exactly once.
     [SerializeField, HideInInspector] private MazeEdgeType[] verticalEdges;
@@ -178,7 +178,7 @@ public class MazeLayoutData : ScriptableObject
         layoutId = 1;
         width = 5;
         height = 5;
-        cellSize = 4f;
+        cellSize = 2f;
         verticalEdges = new MazeEdgeType[(width + 1) * height];
         horizontalEdges = new MazeEdgeType[width * (height + 1)];
         lights = Array.Empty<MazeLightData>();

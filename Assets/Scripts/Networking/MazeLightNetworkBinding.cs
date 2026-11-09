@@ -131,13 +131,22 @@ public class MazeLightNetworkBinding : MonoBehaviour
             found = true;
         }
 
-        if (!found)
+        // Before the first maze is bound there's nothing to find, so stay quiet.
+        if (!found && (explorerLights.Count > 0 || navigatorLights.Count > 0))
         {
             Debug.LogWarning(
                 $"[Light Binding] Could not find light {lightId}.",
                 this
             );
         }
+    }
+
+    // Called by the refresh system: point at the new maze or map
+    // and apply the current network state to its lights.
+    public void SetRoot(Transform newRoot)
+    {
+        generatedRoot = newRoot;
+        RefreshLightReferences();
     }
 
     // We will use this when the maze is regenerated.
