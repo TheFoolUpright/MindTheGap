@@ -66,8 +66,16 @@ MonoBehaviour:
   hasExplorerSpawn: 1
   explorerSpawnCell: {x: 7, y: 9}
   enemySpawnCells:
-  - {x: 2, y: 7}
+  - {x: 12, y: 3}
+  - {x: 14, y: 7}
+  - {x: 5, y: 1}
+  - {x: 0, y: 0}
   resourceSpawnCells:
   - {x: 0, y: 6}
+  - {x: 7, y: 6}
+  - {x: 13, y: 6}
+  - {x: 10, y: 5}
+  - {x: 6, y: 6}
+  - {x: 7, y: 7}
   hasEntrance: 1
   entranceCell: {x: 7, y: 9}

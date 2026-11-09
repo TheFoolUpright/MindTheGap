@@ -25846,6 +25846,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: MazePreview
       objectReference: {fileID: 0}
+    - target: {fileID: 2929913421785054283, guid: 633b262fe124e4b44acabd4307d51762, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2989405292351895238, guid: 633b262fe124e4b44acabd4307d51762, type: 3}
       propertyPath: layout
       value: 
