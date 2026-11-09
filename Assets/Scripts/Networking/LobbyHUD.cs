@@ -47,6 +47,9 @@ public class LobbyHUD : MonoBehaviour
     [Tooltip("How far below eye level the menu centre sits in VR.")]
     [SerializeField] private float vrMenuDrop = 0.15f;
 
+    [Tooltip("Controller ray length in the lobby (the game limits it to 1 m).")]
+    [SerializeField] private float lobbyRayDistance = 5f;
+
     // Canvas size in UI pixels; 1000 px = 1 metre.
     private const float CanvasWidth = 800f;
     private const float CanvasHeight = 1000f;
@@ -111,6 +114,9 @@ public class LobbyHUD : MonoBehaviour
         isVR = viewMode == ViewMode.ForceVR ||
                (viewMode == ViewMode.Auto && IsXRActive());
 
+        Debug.Log($"LobbyHUD: view mode {(isVR ? "VR" : "flat")} " +
+                  $"(setting: {viewMode}, rig prefab: {(xrRigPrefab != null ? xrRigPrefab.name : "none")}).");
+
         BuildMenu();
 
         if (isVR && xrRigPrefab != null)
@@ -144,8 +150,10 @@ public class LobbyHUD : MonoBehaviour
 
         return settings != null &&
                settings.Manager != null &&
-               settings.Manager.activeLoader != null &&
-               XRSettings.isDeviceActive;
+               settings.Manager.activeLoader != null;
+        // Not XRSettings.isDeviceActive: over Quest Link the OpenXR session is
+        // often not running yet when the lobby's Start() runs, so it reads false
+        // and the lobby wrongly fell back to the flat camera (no controllers).
     }
 
     private void SetUpFlat()
@@ -183,6 +191,23 @@ public class LobbyHUD : MonoBehaviour
 
         GameObject rig = Instantiate(xrRigPrefab, Vector3.zero, Quaternion.identity);
         rig.name = xrRigPrefab.name;
+
+        // The lobby has no floor, and the rig's gravity would make the player
+        // fall away from the menu. Moving or turning isn't needed here, so turn
+        // off every locomotion provider (move, turn, teleport, gravity).
+        foreach (var provider in rig.GetComponentsInChildren<
+                     UnityEngine.XR.Interaction.Toolkit.Locomotion.LocomotionProvider>(true))
+        {
+            provider.enabled = false;
+        }
+
+        // In the game the far rays are limited to 1 m on purpose. The menu is
+        // further away than that, so lengthen the rays on the lobby's copy only.
+        foreach (var caster in rig.GetComponentsInChildren<
+                     UnityEngine.XR.Interaction.Toolkit.Interactors.Casters.CurveInteractionCaster>(true))
+        {
+            caster.castDistance = Mathf.Max(caster.castDistance, lobbyRayDistance);
+        }
 
         // XR rays need XRUIInputModule instead of the plain Input System module.
         EventSystem eventSystem = EventSystem.current != null

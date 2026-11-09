@@ -149,7 +149,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LobbyHUD
   lobbyManager: {fileID: 1794480042}
+  viewMode: 0
+  xrRigPrefab: {fileID: 8806329115733545877, guid: 77e7c27b2c5525e4aa8cc9f99d654486, type: 3}
   flatCamera: {fileID: 120943315}
+  flatMenuPosition: {x: 0, y: 1.4, z: 2}
+  vrMenuDistance: 1.6
+  vrMenuDrop: 0.15
 --- !u!4 &55771889
 Transform:
   m_ObjectHideFlags: 0
