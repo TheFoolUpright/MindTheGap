@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -26,7 +25,6 @@ public class EnemySpawn : MonoBehaviour
 
     private const int EnemyLimit = 4;
     private const float SpawnDelayIncrease = 5f;
-    private const float SpawnHoldTime = 3f;
     private const float NavMeshSearchRadius = 0.35f;
 
     private readonly List<SpawnPoint> points = new List<SpawnPoint>();
@@ -37,7 +35,14 @@ public class EnemySpawn : MonoBehaviour
     private void Awake()
     {
         if (enemyPrefab != null)
+        {
             prefabAgent = enemyPrefab.GetComponent<NavMeshAgent>();
+            if (!enemyPrefab.TryGetComponent<EnemyManager>(out _))
+            {
+                Debug.LogError("Enemy prefab needs an EnemyManager on its root.", this);
+                prefabAgent = null;
+            }
+        }
 
         spawnDelay = firstSpawnDelay;
         nextSpawnTime = Time.time + spawnDelay;
@@ -144,9 +149,9 @@ public class EnemySpawn : MonoBehaviour
                 continue;
             }
 
+            enemy.GetComponent<EnemyManager>().Initialize(
+                mazeRefresh.CurrentLayoutData, mazeRefresh.CurrentRoot);
             point.enemy = enemy;
-            agent.isStopped = true;
-            StartCoroutine(ReleaseAfterSpawnHold(agent));
 
             spawnDelay += SpawnDelayIncrease;
             nextSpawnTime = Time.time + spawnDelay;
@@ -155,14 +160,6 @@ public class EnemySpawn : MonoBehaviour
         }
 
         return false;
-    }
-
-    private IEnumerator ReleaseAfterSpawnHold(NavMeshAgent agent)
-    {
-        yield return new WaitForSeconds(SpawnHoldTime);
-
-        if (agent != null && agent.isActiveAndEnabled && agent.isOnNavMesh)
-            agent.isStopped = false;
     }
 
     /*

@@ -2554,8 +2554,8 @@ GameObject:
   - component: {fileID: 121743377}
   - component: {fileID: 121743376}
   - component: {fileID: 121743375}
-  - component: {fileID: 121743378}
   - component: {fileID: 121743379}
+  - component: {fileID: 121743380}
   m_Layer: 0
   m_Name: GameMaze
   m_TagString: Untagged
@@ -2588,13 +2588,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9d38fe4b6272c04c85f90ba7464e02a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MazeRefresh
-  layouts:
-  - layoutPrefab: {fileID: 5741957391712463028, guid: 1484fe3df5326c3498ea2b4fe60b5efd, type: 3}
-    layoutData: {fileID: 11400000, guid: 37659acfe353e254bb799b2bbd6a1447, type: 2}
-  - layoutPrefab: {fileID: 4458685542397854133, guid: 82ca9516b759fb44397fcb1c2d1c100a, type: 3}
-    layoutData: {fileID: 11400000, guid: b74a7a7411d50844f8b40f1184fee810, type: 2}
+  library: {fileID: 11400000, guid: c16d3671fce75094080adac63f54b907, type: 2}
   refreshInterval: 60
   secondsRemaining: 0
+  doorBinding: {fileID: 328437372}
+  lightBinding: {fileID: 328437371}
+  positionPublisher: {fileID: 328437370}
 --- !u!4 &121743377
 Transform:
   m_ObjectHideFlags: 0
@@ -2610,22 +2609,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &121743378
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 121743374}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b2cc4080a9209045bcf519fcced121c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawn
-  mazeRefresh: {fileID: 121743376}
-  enemyPrefab: {fileID: 7988466343413025167, guid: c036c27a239802b47b85d266ebc7f2d3, type: 3}
-  spawnPointPrefab: {fileID: 3174525807440125560, guid: 8a3a6899c9ef4c618c00d6bf7247fd01, type: 3}
-  firstSpawnDelay: 5
 --- !u!114 &121743379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2641,6 +2624,22 @@ MonoBehaviour:
   cubePrefab: {fileID: 802104660332102217, guid: 1ef3564db6e7a7048abe14962da0eff5, type: 3}
   pyramidPrefab: {fileID: 6020597294099680485, guid: 960d69f6ca9ed484c9f7f34b7a356757, type: 3}
   cutter: {fileID: 548145654}
+--- !u!114 &121743380
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 121743374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3b2cc4080a9209045bcf519fcced121c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemySpawn
+  mazeRefresh: {fileID: 121743376}
+  enemyPrefab: {fileID: 7988466343413025167, guid: 1fde75d5bd908664fb178ed165dde57e, type: 3}
+  spawnPointPrefab: {fileID: 3174525807440125560, guid: 8a3a6899c9ef4c618c00d6bf7247fd01, type: 3}
+  firstSpawnDelay: 5
 --- !u!1 &127450078
 GameObject:
   m_ObjectHideFlags: 0
@@ -5220,6 +5219,39 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5285156491708194858, guid: 2134fc251aea38746bcdc9cee3b00b9d, type: 3}
   m_PrefabInstance: {fileID: 326973425}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &328437370 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8092574552176937892, guid: eed6985ac3552da4dbd3c9f84366fd74, type: 3}
+  m_PrefabInstance: {fileID: 2969992012686017970}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3ae2927016388b4d980539bf06e40f1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ExplorerPositionPublisher
+--- !u!114 &328437371 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8100442817620429904, guid: eed6985ac3552da4dbd3c9f84366fd74, type: 3}
+  m_PrefabInstance: {fileID: 2969992012686017970}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 248b5600f4b10394f97dc5316e8cf251, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MazeLightNetworkBinding
+--- !u!114 &328437372 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 4054939522777586096, guid: eed6985ac3552da4dbd3c9f84366fd74, type: 3}
+  m_PrefabInstance: {fileID: 2969992012686017970}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bb3614474f90d2146a493395dcfe90bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::MazeDoorNetworkBinding
 --- !u!1001 &328536963
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -25714,6 +25746,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2659651868006713627, guid: eed6985ac3552da4dbd3c9f84366fd74, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3660908446315557739, guid: eed6985ac3552da4dbd3c9f84366fd74, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -25757,6 +25793,10 @@ PrefabInstance:
     - target: {fileID: 5546318600456063935, guid: eed6985ac3552da4dbd3c9f84366fd74, type: 3}
       propertyPath: m_Name
       value: ExplorerMaze
+      objectReference: {fileID: 0}
+    - target: {fileID: 5546318600456063935, guid: eed6985ac3552da4dbd3c9f84366fd74, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -25844,8 +25884,8 @@ SceneRoots:
   - {fileID: 1442181632}
   - {fileID: 1296691262805569288}
   - {fileID: 4650904106976200264}
+  - {fileID: 121743377}
   - {fileID: 2969992012686017970}
   - {fileID: 987120718}
   - {fileID: 1208368330}
   - {fileID: 967730626}
-  - {fileID: 121743377}
