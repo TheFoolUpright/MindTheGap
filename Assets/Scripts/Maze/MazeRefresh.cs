@@ -246,6 +246,8 @@ public class MazeRefresh : MonoBehaviour
             this
         );
 
+        WarnAboutStaticMazes(root);
+
         // Let the door/light changes go out in an earlier network tick
         // than Ready, so clients always have them when they see Ready.
         yield return WaitForNextNetworkTick();
@@ -254,6 +256,57 @@ public class MazeRefresh : MonoBehaviour
         refreshState.CompleteRefresh();
         secondsRemaining = refreshInterval;
         refreshRoutine = null;
+    }
+
+    private bool warnedAboutStaticMazes;
+
+    // A maze placed directly in the scene (e.g. inside the ExplorerMaze tool
+    // prefab) overlaps the refreshed one and never changes. Point it out once.
+    private void WarnAboutStaticMazes(Transform activeRoot)
+    {
+        if (warnedAboutStaticMazes)
+            return;
+
+        var offenders = new HashSet<string>();
+
+        foreach (ExplorerDoor door in FindObjectsByType<ExplorerDoor>(
+                     FindObjectsInactive.Exclude, FindObjectsSortMode.None))
+        {
+            if (door.transform.IsChildOf(activeRoot) ||
+                door.gameObject.scene != gameObject.scene)
+                continue;
+
+            // Report the maze root (the object with the NavMeshSurface),
+            // or the door's top-level object if there isn't one.
+            NavMeshSurface mazeRoot = door.GetComponentInParent<NavMeshSurface>();
+            Transform top = mazeRoot != null ? mazeRoot.transform : door.transform.root;
+
+            offenders.Add(GetPath(top));
+        }
+
+        if (offenders.Count == 0)
+            return;
+
+        warnedAboutStaticMazes = true;
+        Debug.LogWarning(
+            "MazeRefresh: found maze geometry in the scene that isn't the refreshed maze, " +
+            "so it will overlap it and never change: " + string.Join(", ", offenders) +
+            ". Delete or disable it (e.g. the maze nested inside the ExplorerMaze tool object).",
+            this
+        );
+    }
+
+    private static string GetPath(Transform t)
+    {
+        string path = t.name;
+
+        while (t.parent != null)
+        {
+            t = t.parent;
+            path = t.name + "/" + path;
+        }
+
+        return path;
     }
 
     private static IEnumerator WaitForNextNetworkTick()
