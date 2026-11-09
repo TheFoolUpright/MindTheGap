@@ -21,6 +21,11 @@ public class NavigatorMazeController : MonoBehaviour
     [SerializeField] private NavigatorMapBuilder mapBuilder;
     [SerializeField] private NavigatorMapCursorPan cursorPan;
 
+    [Header("Map Focus")]
+    [Tooltip("After each map swap, centre on the Explorer instead of the entrance. " +
+             "Falls back to the entrance until the Explorer's position is known.")]
+    [SerializeField] private bool focusOnExplorer = true;
+
     [Header("Map Systems")]
     [SerializeField] private NavigatorControlCodeManager codeManager;
     [SerializeField] private MazeDoorNetworkBinding doorBinding;
@@ -45,6 +50,8 @@ public class NavigatorMazeController : MonoBehaviour
     private Coroutine connectRoutine;
     private Coroutine applyRoutine;
     private float overlayShownAt;
+    private bool explorerFocusPending;
+    private bool subscribedToExplorer;
 
     private void OnEnable()
     {
@@ -68,6 +75,11 @@ public class NavigatorMazeController : MonoBehaviour
             refreshState.LayoutChanged -= OnSnapshotChanged;
 
         refreshState = null;
+
+        if (mazeState != null && subscribedToExplorer)
+            mazeState.ExplorerPositionChanged -= OnExplorerPositionChanged;
+
+        subscribedToExplorer = false;
     }
 
     private IEnumerator ConnectWhenReady()
@@ -127,6 +139,12 @@ public class NavigatorMazeController : MonoBehaviour
                 break;
 
             yield return new WaitForSecondsRealtime(0.2f);
+        }
+
+        if (!subscribedToExplorer)
+        {
+            mazeState.ExplorerPositionChanged += OnExplorerPositionChanged;
+            subscribedToExplorer = true;
         }
 
         // Wait until the door/light lists for this generation have arrived.
@@ -223,11 +241,57 @@ public class NavigatorMazeController : MonoBehaviour
 
         Canvas.ForceUpdateCanvases();
 
-        if (cursorPan != null)
-            cursorPan.FocusOnEntrance();
-
         CurrentLayout = layout;
+        FocusAfterSwap();
         MapSwapped?.Invoke(layout);
+    }
+
+    private void FocusAfterSwap()
+    {
+        if (cursorPan == null)
+            return;
+
+        explorerFocusPending = false;
+
+        if (focusOnExplorer && TryGetExplorerPosition(out Vector2 position))
+        {
+            cursorPan.FocusOnMazePosition(position);
+            return;
+        }
+
+        cursorPan.FocusOnEntrance();
+
+        // The Explorer's position may not have arrived yet (start of game).
+        // Jump to them the first time it does.
+        explorerFocusPending = focusOnExplorer;
+    }
+
+    private void OnExplorerPositionChanged(Vector2 _)
+    {
+        if (!explorerFocusPending || cursorPan == null)
+            return;
+
+        if (TryGetExplorerPosition(out Vector2 position))
+        {
+            explorerFocusPending = false;
+            cursorPan.FocusOnMazePosition(position);
+        }
+    }
+
+    // The Explorer's networked position, if known and inside the current map.
+    private bool TryGetExplorerPosition(out Vector2 position)
+    {
+        position = default;
+
+        if (mazeState == null || !mazeState.IsSpawned ||
+            !mazeState.HasExplorerPosition || CurrentLayout == null)
+            return false;
+
+        position = mazeState.ExplorerMazePosition;
+
+        return position.x >= 0f && position.y >= 0f &&
+               position.x < CurrentLayout.Width &&
+               position.y < CurrentLayout.Height;
     }
 
     private void ShowOverlay()

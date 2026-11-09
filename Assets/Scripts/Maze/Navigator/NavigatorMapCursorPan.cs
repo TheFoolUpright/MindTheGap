@@ -249,6 +249,31 @@ public class NavigatorMapCursorPan : MonoBehaviour
         );
     }
 
+    // Centre the view on a position in maze cell units
+    // ((0,0) = outer corner of cell (0,0), cell centres at +0.5),
+    // e.g. the Explorer's networked position.
+    public void FocusOnMazePosition(Vector2 mazePosition)
+    {
+        MazeLayoutData layout = mapBuilder.Layout;
+
+        if (layout == null)
+            return;
+
+        Vector2 mapPosition = mazePosition * mapBuilder.UnitsPerCell;
+
+        Vector2 viewportSize = mapViewport.rect.size;
+        Vector2 contentSize = mapContent.rect.size;
+
+        Vector2 offset = viewportSize * 0.5f - mapPosition;
+
+        offset.x = ClampMapAxis(offset.x, viewportSize.x, contentSize.x);
+        offset.y = ClampMapAxis(offset.y, viewportSize.y, contentSize.y);
+
+        mapContent.anchoredPosition = offset;
+
+        Debug.Log($"Map focused on Explorer at {mazePosition}.", this);
+    }
+
     private float ClampMapAxis(
         float position,
         float viewportSize,

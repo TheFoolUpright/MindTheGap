@@ -26,7 +26,21 @@ public class NavigatorExplorerMarker : MonoBehaviour
         if (explorerMarker != null)
             explorerMarker.gameObject.SetActive(false);
 
+        if (mapBuilder != null)
+            mapBuilder.RuntimeLayoutChanged += OnMapLayoutChanged;
+
         connectionCoroutine = StartCoroutine(ConnectWhenReady());
+    }
+
+    // A position can arrive before the new map is in place and be judged
+    // against the old map's bounds. If the Explorer then stands still, no
+    // further update comes, so re-apply the last known position here.
+    private void OnMapLayoutChanged(MazeLayoutData layout)
+    {
+        hasTarget = false; // snap instead of sliding across the new map
+
+        if (mazeNetworkState != null && mazeNetworkState.IsSpawned)
+            OnExplorerPositionChanged(mazeNetworkState.ExplorerMazePosition);
     }
 
     private IEnumerator ConnectWhenReady()
@@ -134,6 +148,9 @@ public class NavigatorExplorerMarker : MonoBehaviour
 
     private void OnDisable()
     {
+        if (mapBuilder != null)
+            mapBuilder.RuntimeLayoutChanged -= OnMapLayoutChanged;
+
         if (connectionCoroutine != null)
         {
             StopCoroutine(connectionCoroutine);

@@ -24,9 +24,13 @@ public class NavigatorMapBuilder : MonoBehaviour
         runtimeLayout != null ? runtimeLayout : layout;
     public float UnitsPerCell => unitsPerCell;
 
+    // Raised after a map swap so the marker, pan, etc. can re-read Layout.
+    public event System.Action<MazeLayoutData> RuntimeLayoutChanged;
+
     public void SetRuntimeLayout(MazeLayoutData newLayout)
     {
         runtimeLayout = newLayout;
+        RuntimeLayoutChanged?.Invoke(newLayout);
     }
 
     public Transform GeneratedRoot =>
