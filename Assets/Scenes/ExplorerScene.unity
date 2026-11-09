@@ -25577,6 +25577,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 465103759335642407, guid: 32614fc76e5973d49ac8d496ad94092f, type: 3}
+      propertyPath: processOnEntry
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2004993684977899032, guid: 32614fc76e5973d49ac8d496ad94092f, type: 3}
       propertyPath: m_Name
       value: Furnace

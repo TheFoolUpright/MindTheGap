@@ -506,7 +506,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6391650797c918949847cd1fa79f6fa1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::FurnaceController
-  processOnEntry: 0
+  processOnEntry: 1
   cubeGoal: 10
   pyramidGoal: 10
 --- !u!114 &6685161499014454983
