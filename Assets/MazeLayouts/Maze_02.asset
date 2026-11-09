@@ -25,11 +25,11 @@ MonoBehaviour:
     controlCode: 0
   - id: 86
     name: Light_02
-    cell: {x: 6, y: 9}
+    cell: {x: 5, y: 9}
     controlCode: 0
   - id: 87
     name: Light_03
-    cell: {x: 9, y: 9}
+    cell: {x: 9, y: 7}
     controlCode: 0
   - id: 88
     name: Light_04
