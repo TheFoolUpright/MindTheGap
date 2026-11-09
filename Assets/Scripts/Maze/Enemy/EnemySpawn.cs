@@ -8,6 +8,7 @@ public class EnemySpawn : MonoBehaviour
     {
         public Transform marker;
         public GameObject enemy;
+        public int enemyId;
     }
 
     [SerializeField] private MazeRefresh mazeRefresh;
@@ -31,6 +32,7 @@ public class EnemySpawn : MonoBehaviour
     private NavMeshAgent prefabAgent;
     private float spawnDelay;
     private float nextSpawnTime;
+    private int lastEnemyId;
 
     private void Awake()
     {
@@ -105,6 +107,19 @@ public class EnemySpawn : MonoBehaviour
         }
     }
 
+    public void CollectActiveEnemies(List<(int id, Transform root)> activeEnemies)
+    {
+        activeEnemies.Clear();
+        if (!isActiveAndEnabled)
+            return;
+
+        foreach (SpawnPoint point in points)
+        {
+            if (point.enemy != null && point.enemy.activeInHierarchy)
+                activeEnemies.Add((point.enemyId, point.enemy.transform));
+        }
+    }
+
     private int CountEnemies()
     {
         int count = 0;
@@ -152,6 +167,7 @@ public class EnemySpawn : MonoBehaviour
             enemy.GetComponent<EnemyManager>().Initialize(
                 mazeRefresh.CurrentLayoutData, mazeRefresh.CurrentRoot);
             point.enemy = enemy;
+            point.enemyId = ++lastEnemyId;
 
             spawnDelay += SpawnDelayIncrease;
             nextSpawnTime = Time.time + spawnDelay;

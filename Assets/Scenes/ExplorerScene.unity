@@ -2556,6 +2556,7 @@ GameObject:
   - component: {fileID: 121743375}
   - component: {fileID: 121743379}
   - component: {fileID: 121743380}
+  - component: {fileID: 121743381}
   m_Layer: 0
   m_Name: GameMaze
   m_TagString: Untagged
@@ -2640,6 +2641,21 @@ MonoBehaviour:
   enemyPrefab: {fileID: 7988466343413025167, guid: 1fde75d5bd908664fb178ed165dde57e, type: 3}
   spawnPointPrefab: {fileID: 3174525807440125560, guid: 8a3a6899c9ef4c618c00d6bf7247fd01, type: 3}
   firstSpawnDelay: 5
+--- !u!114 &121743381
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 121743374}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84cf0c250dae440d86c373a9c656cd61, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyPositionPublisher
+  publishInterval: 0.1
+  minimumMovement: 0.05
+  minimumTurnDegrees: 2
 --- !u!1 &127450078
 GameObject:
   m_ObjectHideFlags: 0

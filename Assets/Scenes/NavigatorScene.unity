@@ -1603,6 +1603,7 @@ GameObject:
   - component: {fileID: 1072929511}
   - component: {fileID: 1072929512}
   - component: {fileID: 1072929513}
+  - component: {fileID: 1072929522}
   - component: {fileID: 1072929514}
   - component: {fileID: 1072929515}
   - component: {fileID: 1072929520}
@@ -1838,6 +1839,22 @@ MonoBehaviour:
   overlayParent: {fileID: 0}
   overlayMessage: MAZE SHIFTING...
   minimumOverlaySeconds: 0.75
+--- !u!114 &1072929522
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1072929502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04d29c5823274689908ef6bd2f088db5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NavigatorEnemyMarkers
+  markerTemplate: {fileID: 2138850529}
+  markerColor: {r: 1, g: 0, b: 0, a: 1}
+  followSpeed: 15
+  rotationOffset: -45
 --- !u!1 &1113272868
 GameObject:
   m_ObjectHideFlags: 0
