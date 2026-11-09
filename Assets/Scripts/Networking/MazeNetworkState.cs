@@ -60,6 +60,28 @@ public struct NetworkLightState : INetworkSerializable,
 }
 
 
+public struct NetworkEnemyPose : INetworkSerializable, IEquatable<NetworkEnemyPose>
+{
+    public int Id;
+    public int Generation;
+    public Vector2 CellPosition;
+    public float FacingDegrees;
+
+    public bool Equals(NetworkEnemyPose other)
+    {
+        return Id == other.Id && Generation == other.Generation &&
+               CellPosition.Equals(other.CellPosition) && FacingDegrees.Equals(other.FacingDegrees);
+    }
+
+    public void NetworkSerialize<T>(BufferSerializer<T> serializer) where T : IReaderWriter
+    {
+        serializer.SerializeValue(ref Id);
+        serializer.SerializeValue(ref Generation);
+        serializer.SerializeValue(ref CellPosition);
+        serializer.SerializeValue(ref FacingDegrees);
+    }
+}
+
 public class MazeNetworkState : NetworkBehaviour
 {
     // Optional. Only used by scenes without MazeRefresh.
@@ -141,13 +163,74 @@ public class MazeNetworkState : NetworkBehaviour
 
 
 
-   
 
+
+
+    private NetworkList<NetworkEnemyPose> enemyPoses;
+
+    public int EnemyPoseCount => enemyPoses.Count;
+
+    public NetworkEnemyPose GetEnemyPose(int index)
+    {
+        return enemyPoses[index];
+    }
+
+    public void PublishEnemyPoses(
+        int generation, List<NetworkEnemyPose> poses, float minimumMovement, float minimumTurnDegrees)
+    {
+        if (!IsSpawned || !IsServer || generation <= 0 || generation != StateGeneration)
+            return;
+
+        for (int i = enemyPoses.Count - 1; i >= 0; i--)
+        {
+            if (FindEnemyPose(poses, enemyPoses[i].Id) < 0)
+                enemyPoses.RemoveAt(i);
+        }
+
+        foreach (NetworkEnemyPose pose in poses)
+        {
+            int index = -1;
+            for (int i = 0; i < enemyPoses.Count; i++)
+            {
+                if (enemyPoses[i].Id == pose.Id)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            if (index < 0)
+            {
+                enemyPoses.Add(pose);
+                continue;
+            }
+
+            NetworkEnemyPose previous = enemyPoses[index];
+            if (!pose.Equals(previous) &&
+                ((pose.CellPosition - previous.CellPosition).sqrMagnitude >= minimumMovement * minimumMovement ||
+                Mathf.Abs(Mathf.DeltaAngle(previous.FacingDegrees, pose.FacingDegrees)) >= minimumTurnDegrees))
+            {
+                enemyPoses[index] = pose;
+            }
+        }
+    }
+
+    private static int FindEnemyPose(List<NetworkEnemyPose> poses, int id)
+    {
+        for (int i = 0; i < poses.Count; i++)
+        {
+            if (poses[i].Id == id)
+                return i;
+        }
+
+        return -1;
+    }
 
     private void Awake()
     {
         doors = new NetworkList<NetworkDoorState>();
         lights = new NetworkList<NetworkLightState>();
+        enemyPoses = new NetworkList<NetworkEnemyPose>();
     }
 
     public override void OnNetworkSpawn()
@@ -210,6 +293,8 @@ public class MazeNetworkState : NetworkBehaviour
 
         InitializeDoors(layout);
         InitializeLights(layout);
+
+        enemyPoses.Clear();
 
         // Written last: clients use it to know the lists are current.
         stateGeneration.Value = generation;

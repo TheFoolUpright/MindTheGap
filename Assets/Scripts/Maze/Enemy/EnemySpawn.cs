@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -9,6 +8,7 @@ public class EnemySpawn : MonoBehaviour
     {
         public Transform marker;
         public GameObject enemy;
+        public int enemyId;
     }
 
     [SerializeField] private MazeRefresh mazeRefresh;
@@ -26,18 +26,25 @@ public class EnemySpawn : MonoBehaviour
 
     private const int EnemyLimit = 4;
     private const float SpawnDelayIncrease = 5f;
-    private const float SpawnHoldTime = 3f;
     private const float NavMeshSearchRadius = 0.35f;
 
     private readonly List<SpawnPoint> points = new List<SpawnPoint>();
     private NavMeshAgent prefabAgent;
     private float spawnDelay;
     private float nextSpawnTime;
+    private int lastEnemyId;
 
     private void Awake()
     {
         if (enemyPrefab != null)
+        {
             prefabAgent = enemyPrefab.GetComponent<NavMeshAgent>();
+            if (!enemyPrefab.TryGetComponent<EnemyManager>(out _))
+            {
+                Debug.LogError("Enemy prefab needs an EnemyManager on its root.", this);
+                prefabAgent = null;
+            }
+        }
 
         spawnDelay = firstSpawnDelay;
         nextSpawnTime = Time.time + spawnDelay;
@@ -100,6 +107,19 @@ public class EnemySpawn : MonoBehaviour
         }
     }
 
+    public void CollectActiveEnemies(List<(int id, Transform root)> activeEnemies)
+    {
+        activeEnemies.Clear();
+        if (!isActiveAndEnabled)
+            return;
+
+        foreach (SpawnPoint point in points)
+        {
+            if (point.enemy != null && point.enemy.activeInHierarchy)
+                activeEnemies.Add((point.enemyId, point.enemy.transform));
+        }
+    }
+
     private int CountEnemies()
     {
         int count = 0;
@@ -144,9 +164,10 @@ public class EnemySpawn : MonoBehaviour
                 continue;
             }
 
+            enemy.GetComponent<EnemyManager>().Initialize(
+                mazeRefresh.CurrentLayoutData, mazeRefresh.CurrentRoot);
             point.enemy = enemy;
-            agent.isStopped = true;
-            StartCoroutine(ReleaseAfterSpawnHold(agent));
+            point.enemyId = ++lastEnemyId;
 
             spawnDelay += SpawnDelayIncrease;
             nextSpawnTime = Time.time + spawnDelay;
@@ -155,14 +176,6 @@ public class EnemySpawn : MonoBehaviour
         }
 
         return false;
-    }
-
-    private IEnumerator ReleaseAfterSpawnHold(NavMeshAgent agent)
-    {
-        yield return new WaitForSeconds(SpawnHoldTime);
-
-        if (agent != null && agent.isActiveAndEnabled && agent.isOnNavMesh)
-            agent.isStopped = false;
     }
 
     /*
