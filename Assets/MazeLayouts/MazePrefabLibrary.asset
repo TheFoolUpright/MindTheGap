@@ -17,5 +17,5 @@ MonoBehaviour:
     explorerPrefab: {fileID: 3201140655706236814, guid: 6c25f5bd52f3eff4cacce1ecee06f284, type: 3}
     navigatorPrefab: {fileID: 6278987664171494374, guid: 6fb523eea4f7c7748a700dbc4f4056a9, type: 3}
   - layoutData: {fileID: 11400000, guid: b74a7a7411d50844f8b40f1184fee810, type: 2}
-    explorerPrefab: {fileID: 1252424690356561026, guid: 6260d30ebdd9a854bbd53a013d3d4549, type: 3}
-    navigatorPrefab: {fileID: 3231997394713361353, guid: 68f3a6d7c6137ba4b93cd77e7cc6e0a7, type: 3}
+    explorerPrefab: {fileID: 8546407455514277744, guid: c7abd0c57ca00a84cad3bad6161ff8f8, type: 3}
+    navigatorPrefab: {fileID: 4588824094918638570, guid: 4bf7e097de762ce44ab347ad574ed5c3, type: 3}

@@ -174,8 +174,8 @@ public static class TiledMazeImporter
             map, doors, result, MazeEdgeType.Door);
 
         // Import lights.
+        // Control codes are generated at runtime, not stored in Tiled.
         var lightList = new List<MazeLightData>();
-        var usedCodes = new HashSet<int>();
 
         foreach (TiledObject obj in
                  lights.objects ?? Array.Empty<TiledObject>())
@@ -183,18 +183,11 @@ public static class TiledMazeImporter
             Vector2Int cell =
                 ReadPointCell(obj, map, "Lights");
 
-            int code = ReadInt(obj.properties, "code");
-
-            if (!usedCodes.Add(code))
-                throw new FormatException(
-                    $"Duplicate light control code {code}.");
-
             lightList.Add(new MazeLightData
             {
                 id = obj.id,
                 name = obj.name,
-                cell = cell,
-                controlCode = code
+                cell = cell
             });
         }
 
