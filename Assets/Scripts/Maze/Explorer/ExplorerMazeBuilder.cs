@@ -174,6 +174,8 @@ public class ExplorerMazeBuilder : MonoBehaviour
         }
 
 
+        int corridorWalls = CreateEntranceCorridor(root.transform);
+
         // A single NavMeshSurface gathers the completed floor/wall geometry.
         // Do not bake here; use the NavMeshSurface Inspector after saving the maze.
         var surface = root.AddComponent<NavMeshSurface>();
@@ -186,7 +188,8 @@ public class ExplorerMazeBuilder : MonoBehaviour
 
         EditorSceneManager.MarkSceneDirty(gameObject.scene);
         Debug.Log($"Editor maze generated:{wallCount} walls, {doorCount} doors, " +
-                  $"{layout.Lights.Count} lights. Bake the NavMesh AFTER generation.", this);
+                  $"{layout.Lights.Count} lights, {corridorWalls} entrance corridor walls. " +
+                  "Bake the NavMesh AFTER generation.", this);
     }
 
     public void ClearInEditor()
@@ -204,6 +207,52 @@ public class ExplorerMazeBuilder : MonoBehaviour
         Undo.RegisterCreatedObjectUndo(group, $"Create {name} group");
         group.transform.SetParent(parent, false);
         return group.transform;
+    }
+
+    // Two side walls and a floor strip running outward from the entrance
+    // opening, so the maze body sits away from the base tunnel. The corridor
+    // mouth is the point MazeRefresh lines up with MazeExit.
+    private int CreateEntranceCorridor(Transform root)
+    {
+        if (layout.EntranceCorridorCells <= 0 ||
+            !layout.TryGetEntranceOpening(out Vector3 edge, out Vector3 inward))
+            return 0;
+
+        Transform group = CreateGroup("Entrance Corridor", root);
+
+        float cell = layout.CellSize;
+        float length = layout.EntranceCorridorLength;
+        Vector3 outward = -inward;
+        Vector3 side = new Vector3(outward.z, 0f, -outward.x); // perpendicular on the floor
+        bool runsAlongZ = Mathf.Abs(outward.z) > 0.5f;
+
+        // Prefabs are authored lengthwise along local X.
+        Quaternion wallRotation = runsAlongZ ? Quaternion.Euler(0f, 90f, 0f) : Quaternion.identity;
+
+        // Start half a wall-thickness inside the maze so the corridor walls
+        // overlap the perimeter wall corners without a gap.
+        float wallLength = length + wallThickness * 0.5f;
+        Vector3 wallCenter = edge + outward * (length - wallThickness * 0.5f) * 0.5f;
+        wallCenter.y = wallHeight * 0.5f;
+
+        for (int s = -1; s <= 1; s += 2)
+        {
+            SpawnPrefab(wallPrefab, group, s < 0 ? "Corridor_Wall_A" : "Corridor_Wall_B",
+                wallCenter + side * (s * cell * 0.5f), wallRotation,
+                new Vector3(wallLength, wallHeight, wallThickness), true);
+        }
+
+        Vector3 floorCenter = edge + outward * (length * 0.5f);
+        floorCenter.y = -floorThickness * 0.5f;
+        float floorWidth = cell + wallThickness;
+        Vector3 floorScale = runsAlongZ
+            ? new Vector3(floorWidth, floorThickness, length)
+            : new Vector3(length, floorThickness, floorWidth);
+
+        SpawnPrefab(floorPrefab, group, "Corridor_Floor", floorCenter,
+            Quaternion.identity, floorScale, true);
+
+        return 2;
     }
 
     private void CreateFloor(Transform parent)

@@ -57,8 +57,29 @@ public class MazeLayoutData : ScriptableObject
     [SerializeField] private bool hasEntrance;
     [SerializeField] private Vector2Int entranceCell;
 
+    [Tooltip("Length of the walled corridor built outside the entrance, in cells. " +
+             "The corridor mouth is what lines up with MazeExit. Not touched by " +
+             "re-importing from Tiled. Regenerate the maze prefab after changing it.")]
+    [SerializeField, Min(0)] private int entranceCorridorCells = 1;
+
     public bool HasEntrance => hasEntrance;
     public Vector2Int EntranceCell => entranceCell;
+    public int EntranceCorridorCells => Mathf.Max(0, entranceCorridorCells);
+    public float EntranceCorridorLength => EntranceCorridorCells * cellSize;
+
+    // Middle of the corridor's outer end (or the entrance edge itself when
+    // there is no corridor), at floor level, in layout space.
+    public bool TryGetEntranceMouth(out Vector3 mouthLocal, out Vector3 inwardLocal)
+    {
+        if (!TryGetEntranceOpening(out Vector3 edge, out inwardLocal))
+        {
+            mouthLocal = Vector3.zero;
+            return false;
+        }
+
+        mouthLocal = edge - inwardLocal * EntranceCorridorLength;
+        return true;
+    }
 
     public void SetEntranceCell(Vector2Int cell)
     {
@@ -120,6 +141,81 @@ public class MazeLayoutData : ScriptableObject
             case MazeDirection.West: return GetVerticalEdge(cellX, cellY);
             default: throw new ArgumentOutOfRangeException(nameof(direction));
         }
+    }
+
+    // Finds the outer edge of the entrance cell that leads out of the maze.
+    // edgeCenterLocal: middle of that edge at floor level, in layout space.
+    // inwardLocal: unit direction from the edge into the maze.
+    // Prefers a perimeter edge that isn't a wall (corner cells have two).
+    public bool TryGetEntranceOpening(out Vector3 edgeCenterLocal, out Vector3 inwardLocal)
+    {
+        edgeCenterLocal = Vector3.zero;
+        inwardLocal = Vector3.forward;
+
+        if (!hasEntrance || !IsConfigured)
+            return false;
+
+        int x = entranceCell.x;
+        int y = entranceCell.y;
+
+        if (x < 0 || x >= width || y < 0 || y >= height)
+            return false;
+
+        MazeDirection? chosen = null;
+        MazeDirection[] order =
+        {
+            MazeDirection.North, MazeDirection.East,
+            MazeDirection.South, MazeDirection.West
+        };
+
+        foreach (MazeDirection direction in order)
+        {
+            bool onPerimeter =
+                (direction == MazeDirection.North && y == height - 1) ||
+                (direction == MazeDirection.South && y == 0) ||
+                (direction == MazeDirection.East && x == width - 1) ||
+                (direction == MazeDirection.West && x == 0);
+
+            if (!onPerimeter)
+                continue;
+
+            if (chosen == null)
+                chosen = direction;
+
+            if (GetEdge(x, y, direction) != MazeEdgeType.Wall)
+            {
+                chosen = direction;
+                break;
+            }
+        }
+
+        if (chosen == null)
+            return false; // Entrance is not on the outside of the maze.
+
+        float cx = (x + 0.5f) * cellSize;
+        float cy = (y + 0.5f) * cellSize;
+
+        switch (chosen.Value)
+        {
+            case MazeDirection.North:
+                edgeCenterLocal = new Vector3(cx, 0f, height * cellSize);
+                inwardLocal = Vector3.back;
+                break;
+            case MazeDirection.South:
+                edgeCenterLocal = new Vector3(cx, 0f, 0f);
+                inwardLocal = Vector3.forward;
+                break;
+            case MazeDirection.East:
+                edgeCenterLocal = new Vector3(width * cellSize, 0f, cy);
+                inwardLocal = Vector3.left;
+                break;
+            default:
+                edgeCenterLocal = new Vector3(0f, 0f, cy);
+                inwardLocal = Vector3.right;
+                break;
+        }
+
+        return true;
     }
 
     public Vector3 GetCellCenterLocal(int x, int y)

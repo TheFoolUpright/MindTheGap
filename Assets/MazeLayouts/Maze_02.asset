@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fb35341e006cde74f9baaa16e8659112, type: 3}
   m_Name: Maze_02
   m_EditorClassIdentifier: Assembly-CSharp::MazeLayoutData
-  layoutId: 3
+  layoutId: 2
   width: 16
   height: 10
   cellSize: 2
@@ -25,11 +25,11 @@ MonoBehaviour:
     controlCode: 0
   - id: 86
     name: Light_02
-    cell: {x: 5, y: 9}
+    cell: {x: 6, y: 9}
     controlCode: 0
   - id: 87
     name: Light_03
-    cell: {x: 9, y: 7}
+    cell: {x: 9, y: 9}
     controlCode: 0
   - id: 88
     name: Light_04
@@ -66,16 +66,9 @@ MonoBehaviour:
   hasExplorerSpawn: 1
   explorerSpawnCell: {x: 7, y: 9}
   enemySpawnCells:
-  - {x: 12, y: 3}
-  - {x: 14, y: 7}
-  - {x: 5, y: 1}
-  - {x: 0, y: 0}
+  - {x: 2, y: 7}
   resourceSpawnCells:
   - {x: 0, y: 6}
-  - {x: 7, y: 6}
-  - {x: 13, y: 6}
-  - {x: 10, y: 5}
-  - {x: 6, y: 6}
-  - {x: 7, y: 7}
   hasEntrance: 1
   entranceCell: {x: 7, y: 9}
+  entranceCorridorCells: 1

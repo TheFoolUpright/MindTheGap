@@ -1720,6 +1720,46 @@
                  "width":0,
                  "x":64,
                  "y":64
+                }, 
+                {
+                 "height":0,
+                 "id":107,
+                 "name":"",
+                 "polyline":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":0,
+                         "y":32
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":224,
+                 "y":-32
+                }, 
+                {
+                 "height":0,
+                 "id":108,
+                 "name":"",
+                 "polyline":[
+                        {
+                         "x":0,
+                         "y":0
+                        }, 
+                        {
+                         "x":0,
+                         "y":32
+                        }],
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":0,
+                 "x":256,
+                 "y":-32
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2136,7 +2176,7 @@
                  "visible":true,
                  "width":0,
                  "x":240,
-                 "y":0
+                 "y":-32
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -2145,7 +2185,7 @@
          "y":0
         }],
  "nextlayerid":9,
- "nextobjectid":107,
+ "nextobjectid":109,
  "orientation":"orthogonal",
  "properties":[
         {

@@ -24,6 +24,9 @@ public class MazeRefresh : MonoBehaviour
     public Transform CurrentRoot =>
         activeLayout != null ? activeLayout.transform : null;
     public bool IsRefreshing => refreshRoutine != null;
+    public bool TimerPaused => timerPaused;
+    public float SecondsRemaining => secondsRemaining;
+    public float RefreshInterval => refreshInterval;
 
     [Header("Layouts")]
     [SerializeField] private MazePrefabLibrary library;
@@ -31,6 +34,18 @@ public class MazeRefresh : MonoBehaviour
     [Header("Timer")]
     [SerializeField] private float refreshInterval = 60f;
     [SerializeField] private float secondsRemaining;
+    [Tooltip("Set by ExpeditionController. The R key still refreshes while paused.")]
+    [SerializeField] private bool timerPaused;
+
+    [Header("Entrance Alignment")]
+    [Tooltip("The MazeExit doorway. Each new maze is placed so its entrance " +
+             "opening sits here, facing along the anchor's +Z. Leave empty to " +
+             "spawn mazes at this object's origin.")]
+    [SerializeField] private Transform entranceAnchor;
+
+    [Tooltip("Put the maze floor at the bottom of the anchor's BoxCollider " +
+             "instead of at the anchor's pivot.")]
+    [SerializeField] private bool alignFloorToAnchorBottom = true;
 
     [Header("Explorer Bindings (optional)")]
     [Tooltip("Re-pointed at each new maze. Can live on any persistent object.")]
@@ -150,13 +165,64 @@ public class MazeRefresh : MonoBehaviour
         if (IsRefreshing || activeLayout == null)
             return;
 
-        secondsRemaining -= Time.deltaTime;
+        if (!timerPaused)
+            secondsRemaining -= Time.deltaTime;
 
-        if (secondsRemaining <= 0f ||
+        if ((!timerPaused && secondsRemaining <= 0f) ||
             (Keyboard.current != null && Keyboard.current.rKey.wasPressedThisFrame))
         {
             RefreshNow();
         }
+    }
+
+    public void SetTimerPaused(bool paused)
+    {
+        if (timerPaused == paused)
+            return;
+
+        timerPaused = paused;
+        Debug.Log(
+            $"Maze refresh timer {(paused ? "paused" : "resumed")} " +
+            $"({secondsRemaining:0.0}s left).",
+            this
+        );
+    }
+
+    public void RestartTimer()
+    {
+        secondsRemaining = refreshInterval;
+    }
+
+    // World pose for a layout root so its entrance opening lands on the
+    // anchor, with the maze extending along the anchor's +Z.
+    public bool TryGetAlignedPose(
+        MazeLayoutData layout, out Vector3 position, out Quaternion rotation)
+    {
+        position = transform.position;
+        rotation = transform.rotation;
+
+        if (entranceAnchor == null || layout == null ||
+            !layout.TryGetEntranceMouth(out Vector3 edgeLocal, out Vector3 inwardLocal))
+            return false;
+
+        Vector3 anchorPoint = entranceAnchor.position;
+
+        if (alignFloorToAnchorBottom &&
+            entranceAnchor.TryGetComponent(out BoxCollider anchorBox))
+        {
+            anchorPoint = entranceAnchor.TransformPoint(
+                anchorBox.center - new Vector3(0f, anchorBox.size.y * 0.5f, 0f));
+        }
+
+        Vector3 into = Vector3.ProjectOnPlane(entranceAnchor.forward, Vector3.up);
+
+        if (into.sqrMagnitude < 0.0001f)
+            into = Vector3.forward;
+
+        float yaw = Vector3.SignedAngle(inwardLocal, into.normalized, Vector3.up);
+        rotation = Quaternion.Euler(0f, yaw, 0f);
+        position = anchorPoint - rotation * edgeLocal;
+        return true;
     }
 
     [ContextMenu("Refresh Now")]
@@ -214,7 +280,27 @@ public class MazeRefresh : MonoBehaviour
         }
 
         // C) Activate.
-        activeLayout = Instantiate(entry.explorerPrefab, transform, false);
+        // Spawn straight at the aligned pose (not moved afterwards) so the
+        // baked NavMesh registers in the right place on OnEnable.
+        if (TryGetAlignedPose(entry.layoutData, out Vector3 spawnPosition, out Quaternion spawnRotation))
+        {
+            activeLayout = Instantiate(
+                entry.explorerPrefab, spawnPosition, spawnRotation, transform);
+        }
+        else
+        {
+            if (entranceAnchor != null)
+            {
+                Debug.LogWarning(
+                    $"Layout {entry.LayoutId} has no entrance on the maze edge; " +
+                    "spawning at the MazeRefresh origin instead.",
+                    this
+                );
+            }
+
+            activeLayout = Instantiate(entry.explorerPrefab, transform, false);
+        }
+
         activeLayout.name = entry.explorerPrefab.name;
         activeLayout.SetActive(true);
 
@@ -307,6 +393,39 @@ public class MazeRefresh : MonoBehaviour
         }
 
         return path;
+    }
+
+    // Select the MazeRefresh object to preview where each layout will sit
+    // relative to the entrance anchor.
+    private void OnDrawGizmosSelected()
+    {
+        if (library == null || library.Layouts == null)
+            return;
+
+        foreach (MazePrefabEntry entry in library.Layouts)
+        {
+            MazeLayoutData data = entry != null ? entry.layoutData : null;
+
+            if (data == null || !data.IsConfigured ||
+                !TryGetAlignedPose(data, out Vector3 position, out Quaternion rotation))
+                continue;
+
+            float w = data.Width * data.CellSize;
+            float d = data.Height * data.CellSize;
+
+            Gizmos.color = new Color(0.2f, 1f, 0.4f, 0.9f);
+            Gizmos.matrix = Matrix4x4.TRS(position, rotation, Vector3.one);
+            Gizmos.DrawWireCube(new Vector3(w * 0.5f, 0f, d * 0.5f), new Vector3(w, 0.05f, d));
+
+            if (data.TryGetEntranceOpening(out Vector3 edge, out Vector3 inward))
+            {
+                Vector3 mouth = edge - inward * data.EntranceCorridorLength;
+                Gizmos.DrawLine(edge, mouth);
+                Gizmos.DrawSphere(mouth, 0.25f);
+            }
+
+            Gizmos.matrix = Matrix4x4.identity;
+        }
     }
 
     private static IEnumerator WaitForNextNetworkTick()

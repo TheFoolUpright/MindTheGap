@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MazePrefabLibrary
   layouts:
   - layoutData: {fileID: 11400000, guid: 37659acfe353e254bb799b2bbd6a1447, type: 2}
-    explorerPrefab: {fileID: 3201140655706236814, guid: 6c25f5bd52f3eff4cacce1ecee06f284, type: 3}
+    explorerPrefab: {fileID: 3247438950248749886, guid: a2b39896a6d6d2a44b9b595ea96571b4, type: 3}
     navigatorPrefab: {fileID: 6278987664171494374, guid: 6fb523eea4f7c7748a700dbc4f4056a9, type: 3}
   - layoutData: {fileID: 11400000, guid: b74a7a7411d50844f8b40f1184fee810, type: 2}
-    explorerPrefab: {fileID: 3477031809127680887, guid: 5cea876cecea97b46ad75c99de78195a, type: 3}
+    explorerPrefab: {fileID: 7510713153052332465, guid: 5e389c147a6e9e64aa68ab66727234ab, type: 3}
     navigatorPrefab: {fileID: 3522086879539984710, guid: da435f4585970d54b884a8c7c638ae36, type: 3}
